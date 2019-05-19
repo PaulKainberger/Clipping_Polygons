@@ -45,7 +45,7 @@ public class GUIGraphicsExample extends JPanel
          } 
       }); 
       Container contentPane = frame.getContentPane();
-      contentPane.add(new Panel());
+      contentPane.add(new GUIGraphicsExample());
       frame.show();
    }
 }
