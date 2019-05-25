@@ -4,6 +4,7 @@ package Polygon;
  * finite set of points.
  * 
  * @author Philipp
+ * @version 0.1
  *
  */
 @SuppressWarnings("serial")
