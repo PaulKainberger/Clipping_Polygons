@@ -7,7 +7,11 @@ import java.util.Set;
 /**
  * Represents a polygon defined by vertices which are two dimensional double points.
  * The first and the last point is connected by an edge.
- * Two adjacent vertices are different.
+ * Two adjacent vertices are different. Two points are considered equal if they
+ * only differ by eps=0.0000001. This avoids double points arising from
+ * rounding during numerical calculations. However, it is nevertheless suggested to
+ * make sure that vertices are not that close because methods like contains() might give
+ * wrong results then.
  * 
  * @author Philipp
  * @version 0.1
@@ -90,8 +94,8 @@ public class Polygon {
 		
 		// check if vertex does violate rule that
 		// two adjacent vertices are not equal
-		if(!isEmpty() && ( vertex.equals(getVertex( Math.floorMod(index, getNumberVertices()) )) || 
-						   vertex.equals(getVertex( Math.floorMod(index-1, getNumberVertices()) )))) {
+		if(!isEmpty() && ( pointsEqualEps(getVertex( Math.floorMod(index, getNumberVertices()) ), vertex) || 
+				           pointsEqualEps(getVertex( Math.floorMod(index-1, getNumberVertices()) ), vertex))) {
 			return false;
 		} 
 		
@@ -229,8 +233,8 @@ public class Polygon {
 	 * @param point Point for which we want to check if it is inside.
 	 * @return True if the point is inside and false otherwise.
 	 */
-	private boolean isBetween(Point2D.Double pointStart, Point2D.Double pointEnd,
-			                  Point2D.Double point) {
+	static private boolean isBetween(Point2D.Double pointStart, Point2D.Double pointEnd,
+			                         Point2D.Double point) {
 		double dx13 = point.getX() - pointStart.getX();
 		double dy13 = point.getY() - pointStart.getY();
 		double dx12 = pointEnd.getX() - pointStart.getX();
@@ -269,8 +273,8 @@ public class Polygon {
 	 * null otherwise.
 	 * @throws IntersectionException Thrown if there are infinitely many intersection points.
 	 */
-	private Point2D.Double intersectLines(Point2D.Double point1Start, Point2D.Double point1End,
-										  Point2D.Double point2Start, Point2D.Double point2End) throws IntersectionException {
+	static private Point2D.Double intersectLines(Point2D.Double point1Start, Point2D.Double point1End,
+										         Point2D.Double point2Start, Point2D.Double point2End) throws IntersectionException {
 		double dx1 = point1Start.getX() - point1End.getX();
 		double dx2 = point2Start.getX() - point2End.getX();
 		double dy1 = point1Start.getY() - point1End.getY();
@@ -312,6 +316,23 @@ public class Polygon {
 	}
 	
 	/**
+	 * Checks if two points are equal up to the epsilon of the class, i.e.
+	 * their x and y coordinate only differ by the epsilon in both directions.
+	 * 
+	 * @param point1 First point.
+	 * @param point2 Second point.
+	 * @return True if they are equal up to an epsilon and false otherwise.
+	 */
+	static boolean pointsEqualEps(Point2D.Double point1, Point2D.Double point2) {
+		if(point1.getX() - eps < point2.getX() && point2.getX() < point1.getX() + eps &&
+	       point1.getY() - eps < point2.getY() && point2.getY() < point1.getY() + eps) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
 	 * Checks if set of points contains a point up to an epsilon.
 	 * 
 	 * @param points Set of points for which we want to check if it contains other point.
@@ -321,8 +342,7 @@ public class Polygon {
 	 */
 	static boolean containsPoint(Set<Point2D.Double> points, Point2D.Double point) {
 		for(Point2D.Double p : points) {
-			if(point.getX() - eps < p.getX() && p.getX() < point.getX() + eps &&
-			   point.getY() - eps < p.getY() && p.getY() < point.getY() + eps) {
+			if(pointsEqualEps(p, point)) {
 				return true;
 			}
 		}
@@ -517,7 +537,7 @@ public class Polygon {
 				int leastIndexSec = secPolygon.getLeastVertex();
 				int leastIndexThis = getLeastVertex();
 				for(int i = 0; i < getNumberVertices(); i++) {
-					if(!secPolygon.getVertex( (leastIndexSec + i) % numVertices).equals(getVertex((leastIndexThis + i) % numVertices))) {
+					if(!pointsEqualEps(secPolygon.getVertex( (leastIndexSec + i) % numVertices),(getVertex((leastIndexThis + i) % numVertices)))) {
 						return false;
 					}
 				}
