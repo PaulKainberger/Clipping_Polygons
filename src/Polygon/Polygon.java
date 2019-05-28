@@ -2,6 +2,7 @@ package Polygon;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,7 +21,7 @@ public class Polygon {
 	/**
 	 * Internal representation of list of vertices.
 	 */
-	private ArrayList<Point2D.Double> vertices;
+	protected List<Point2D.Double> vertices;
 	/**
 	 * Epsilon used for numeric computations.
 	 */
@@ -323,7 +324,7 @@ public class Polygon {
 	 * @param point2 Second point.
 	 * @return True if they are equal up to an epsilon and false otherwise.
 	 */
-	static boolean pointsEqualEps(Point2D.Double point1, Point2D.Double point2) {
+	protected static boolean pointsEqualEps(Point2D.Double point1, Point2D.Double point2) {
 		if(point1.getX() - eps < point2.getX() && point2.getX() < point1.getX() + eps &&
 	       point1.getY() - eps < point2.getY() && point2.getY() < point1.getY() + eps) {
 			return true;
