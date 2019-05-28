@@ -186,7 +186,8 @@ public class Polygon {
 	 * 
 	 * @return True if the polygon is oriented clockwise and false otherwise.
 	 */
-	public boolean orientedClockwise() {
+	public boolean orientedClockwise() {	 * True if the vertex is an entry vertex, false if it is an exit vertex.
+
 		// degenerate case, only one point or empty
 		if(getNumberVertices() < 2) {
 			return false;
