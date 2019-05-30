@@ -193,10 +193,11 @@ public class GUI {
 		gbl_panel_settings_out.columnWidths = new int[]{360, 0};
 		gbl_panel_settings_out.rowHeights = new int[]{450, 0};
 		gbl_panel_settings_out.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_panel_settings_out.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		gbl_panel_settings_out.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panel_settings_out.setLayout(gbl_panel_settings_out);
 		
 		JScrollPane scrollPane_settings = new JScrollPane();
+		scrollPane_settings.setMinimumSize(new Dimension(410, 29));
 		GridBagConstraints gbc_scrollPane_settings = new GridBagConstraints();
 		gbc_scrollPane_settings.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_settings.gridx = 0;
