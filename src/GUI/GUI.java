@@ -14,11 +14,15 @@ import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.ScrollPane;
+import java.awt.Toolkit;
+
 import javax.swing.JTextArea;
 import java.awt.Dimension;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -42,6 +46,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.ScrollPaneConstants;
 
 /**
  * @author Paul
@@ -115,23 +120,36 @@ public class GUI {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {600, 360};
 		gridBagLayout.rowHeights = new int[] {450};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0};
-		gridBagLayout.rowWeights = new double[]{0.0};
+		gridBagLayout.columnWeights = new double[]{1.0, 0.0};
+		gridBagLayout.rowWeights = new double[]{1.0};
 		frmClippingPolygons.getContentPane().setLayout(gridBagLayout);
 		
 	/**
 	* Display.
 	*/
 		
+		JPanel panel_display_out = new JPanel();
+		panel_display_out.setBorder(null);
+		GridBagConstraints gbc_panel_display_out = new GridBagConstraints();
+		gbc_panel_display_out.fill = GridBagConstraints.BOTH;
+		gbc_panel_display_out.insets = new Insets(0, 0, 0, 5);
+		gbc_panel_display_out.gridx = 0;
+		gbc_panel_display_out.gridy = 0;
+		frmClippingPolygons.getContentPane().add(panel_display_out, gbc_panel_display_out);
+		GridBagLayout gbl_panel_display_out = new GridBagLayout();
+		gbl_panel_display_out.columnWidths = new int[]{600, 0};
+		gbl_panel_display_out.rowHeights = new int[]{450, 0};
+		gbl_panel_display_out.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panel_display_out.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		panel_display_out.setLayout(gbl_panel_display_out);
+		
 		JScrollPane scrollPane_display = new JScrollPane();
+		scrollPane_display.setBorder(null);
 		GridBagConstraints gbc_scrollPane_display = new GridBagConstraints();
-		gbc_scrollPane_display.insets = new Insets(5, 5, 5, 0);
-		gbc_scrollPane_display.weighty = 0.5;
-		gbc_scrollPane_display.weightx = 0.5;
 		gbc_scrollPane_display.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_display.gridx = 0;
 		gbc_scrollPane_display.gridy = 0;
-		frmClippingPolygons.getContentPane().add(scrollPane_display, gbc_scrollPane_display);
+		panel_display_out.add(scrollPane_display, gbc_scrollPane_display);
 		
 		JPanel panel_display = new JPanel();
 		scrollPane_display.setViewportView(panel_display);
@@ -163,16 +181,28 @@ public class GUI {
 	* Settings.
 	*/
 		
+		JPanel panel_settings_out = new JPanel();
+		panel_settings_out.setBorder(null);
+		GridBagConstraints gbc_panel_settings_out = new GridBagConstraints();
+		gbc_panel_settings_out.anchor = GridBagConstraints.EAST;
+		gbc_panel_settings_out.fill = GridBagConstraints.VERTICAL;
+		gbc_panel_settings_out.gridx = 1;
+		gbc_panel_settings_out.gridy = 0;
+		frmClippingPolygons.getContentPane().add(panel_settings_out, gbc_panel_settings_out);
+		GridBagLayout gbl_panel_settings_out = new GridBagLayout();
+		gbl_panel_settings_out.columnWidths = new int[]{360, 0};
+		gbl_panel_settings_out.rowHeights = new int[]{450, 0};
+		gbl_panel_settings_out.columnWeights = new double[]{0.0, Double.MIN_VALUE};
+		gbl_panel_settings_out.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		panel_settings_out.setLayout(gbl_panel_settings_out);
+		
 		JScrollPane scrollPane_settings = new JScrollPane();
-		scrollPane_settings.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		GridBagConstraints gbc_scrollPane_settings = new GridBagConstraints();
-		gbc_scrollPane_settings.insets = new Insets(5, 5, 5, 5);
-		gbc_scrollPane_settings.weighty = 1.0;
-		gbc_scrollPane_settings.weightx = 1.0;
 		gbc_scrollPane_settings.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_settings.gridx = 1;
+		gbc_scrollPane_settings.gridx = 0;
 		gbc_scrollPane_settings.gridy = 0;
-		frmClippingPolygons.getContentPane().add(scrollPane_settings, gbc_scrollPane_settings);
+		panel_settings_out.add(scrollPane_settings, gbc_scrollPane_settings);
+		scrollPane_settings.setBorder(new EmptyBorder(3, 3, 3, 3));
 		
 		JPanel panel_settings = new JPanel();
 		scrollPane_settings.setViewportView(panel_settings);
@@ -471,8 +501,7 @@ public class GUI {
 		JPanel panel_run = new JPanel();
 		panel_run.setBorder(null);
 		GridBagConstraints gbc_panel_run = new GridBagConstraints();
-		gbc_panel_run.anchor = GridBagConstraints.SOUTH;
-		gbc_panel_run.fill = GridBagConstraints.HORIZONTAL;
+		gbc_panel_run.fill = GridBagConstraints.BOTH;
 		gbc_panel_run.gridx = 0;
 		gbc_panel_run.gridy = 2;
 		panel_settings.add(panel_run, gbc_panel_run);

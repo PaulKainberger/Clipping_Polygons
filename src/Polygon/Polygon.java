@@ -183,11 +183,11 @@ public class Polygon {
 	 * Checks if the polygon is oriented clockwise.
 	 * Implements the method suggested in: https://stackoverflow.com/a/1165943/7698457
 	 * Edge cases (e.g. a single point or empty polygon) are considered as not clockwise.
+	 * True if the vertex is an entry vertex, false if it is an exit vertex.
 	 * 
 	 * @return True if the polygon is oriented clockwise and false otherwise.
 	 */
-	public boolean orientedClockwise() {	 * True if the vertex is an entry vertex, false if it is an exit vertex.
-
+	public boolean orientedClockwise() {	 
 		// degenerate case, only one point or empty
 		if(getNumberVertices() < 2) {
 			return false;
