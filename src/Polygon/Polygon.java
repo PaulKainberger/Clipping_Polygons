@@ -1,4 +1,8 @@
 package Polygon;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -563,5 +567,41 @@ public class Polygon {
 			}
 		}
 		return rep;
+	}
+	
+	private int[] getXintValues() {
+		int[] x = new int[getNumberVertices()];
+		for(int i=0; i<getNumberVertices(); i++) {
+			x[i] = (int)getVertex(i).getX();
+		}
+		return x;
+	}
+	
+	private int[] getYintValues() {
+		int[] y = new int[getNumberVertices()];
+		for(int i=0; i<getNumberVertices(); i++) {
+			y[i] = (int)getVertex(i).getY();
+		}
+		return y;
+	}
+	
+	/**
+	 * Draws a polygon without the edge connecting the last point to the first.
+	 * 
+	 * @param g The graphics object on which the polygon is drawn.
+	 * @param c The color of the polygon.
+	 */
+	public void drawIncomplete(Graphics2D g, Color c) {
+		g.setColor(c);
+		for(int i=0; i<getNumberVertices()-1; i++) {
+			g.drawLine((int)getVertex(i).getX(), (int)getVertex(i).getY(), (int)getVertex(i+1).getX(), (int)getVertex(i+1).getY());
+			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.2F));
+			g.fillPolygon(getXintValues(), getYintValues(), getNumberVertices());
+		}
+	}
+	
+	public void draw(Graphics2D g, Color c) {
+		drawIncomplete(g,c);
+		g.drawLine((int)getVertex(getNumberVertices()-1).getX(),(int)getVertex(getNumberVertices()-1).getY(),(int)getVertex(0).getX(),(int)getVertex(0).getY());
 	}
 }
