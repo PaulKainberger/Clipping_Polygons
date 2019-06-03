@@ -2,6 +2,7 @@ package Polygon;
 import static org.junit.Assert.*;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
 import org.junit.After;
@@ -313,5 +314,29 @@ public class TestPolygon {
 		poly.addVertex(0, 0);
 		poly.addVertex(1, 2);
 		assertEquals("(0.0,0.0),(1.0,2.0)", poly.toString());
+	}
+	
+	@Test
+	public void testGetBoundsNormal() {
+		// https://www.wolframalpha.com/input/?i=Polygon((1.0,2.0),(2.0,3.0),(3.0,2.0),(2.0,1.0))
+		poly.addVertex(1, 2);
+		poly.addVertex(2, 3);
+		poly.addVertex(3, 2);
+		poly.addVertex(2, 1);
+		System.out.println(poly.toString());
+		Rectangle2D.Double bounds = poly.getBounds();
+		assertEquals(new Rectangle2D.Double(1, 1, 2, 2), bounds);
+	}
+	
+	@Test
+	public void testGetBoundsTrivial() {
+		assertNull(poly.getBounds());
+	}
+	
+	@Test
+	public void testGetBoundsOnePoint() {
+		poly.addVertex(1.1, 1.2);
+		Rectangle2D.Double bounds = poly.getBounds();
+		assertEquals(new Rectangle2D.Double(1.1, 1.2, 0, 0), bounds);
 	}
 }

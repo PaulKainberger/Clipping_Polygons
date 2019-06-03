@@ -1,5 +1,6 @@
 package Polygon;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +45,15 @@ public class Polygon {
 		for(int i = 0; i < vertices.length; i++) {
 			addVertex(vertices[i]);
 		}
+	}
+	
+	/**
+	 * Copy-constructor of Polygon class.
+	 * 
+	 * @param polygon Polygon which should be copied.
+	 */
+	public Polygon(Polygon polygon) {
+		this((Point2D.Double[])polygon.vertices.toArray());
 	}
 	
 	/**
@@ -158,12 +168,50 @@ public class Polygon {
 	}
 	
 	/**
+	 * Computes the bounds of the polygon. The top-left corner has the smallest x and y
+	 * coordinates. If the polygon is empty null will be returned. If it only contains one 
+	 * vertex then a rectangle with 0 size at that point will be returned. 
+	 * 
+	 * @return The bounding box of the polygon.
+	 */
+	public Rectangle2D.Double getBounds() {
+		if(isEmpty()) {
+			return null;
+		}
+		
+		// indices of vertex with smallest/largest x/y coordinates
+		int minX = 0;
+		int minY = 0;
+		int maxX = 0;
+		int maxY = 0;
+		
+		for(int i = 0; i < getNumberVertices(); i++) {
+			if(getVertex(i).getX() < getVertex(minX).getX()) {
+				minX = i;
+			}
+			if(getVertex(i).getY() < getVertex(minY).getY()) {
+				minY = i;
+			}
+			if(getVertex(maxX).getX() < getVertex(i).getX()) {
+				maxX = i;
+			}
+			if(getVertex(maxY).getY() < getVertex(i).getY()) {
+				maxY = i;
+			}
+		}
+		double width = getVertex(maxX).getX() - getVertex(minX).getX();
+		double height = getVertex(maxY).getY() - getVertex(minY).getY();
+		
+		return new Rectangle2D.Double(getVertex(minX).getX(), getVertex(minY).getY(), width, height);
+	}
+	
+	/**
 	 * Used to get a canonical vertex of the polygon, namely the vertex with the smallest x coordinate,
 	 * and if that is not unique, the one with the smallest y coordinate among them.
 	 * 
 	 * @return The index of this least vertex or -1 if the polygon is empty.
 	 */
-	private int getLeastVertex() {
+	int getLeastVertex() {
 		if(isEmpty()) {
 			return -1;
 		} else {
@@ -235,8 +283,8 @@ public class Polygon {
 	 * @param point Point for which we want to check if it is inside.
 	 * @return True if the point is inside and false otherwise.
 	 */
-	static private boolean isBetween(Point2D.Double pointStart, Point2D.Double pointEnd,
-			                         Point2D.Double point) {
+	static boolean isBetween(Point2D.Double pointStart, Point2D.Double pointEnd,
+			                 Point2D.Double point) {
 		double dx13 = point.getX() - pointStart.getX();
 		double dy13 = point.getY() - pointStart.getY();
 		double dx12 = pointEnd.getX() - pointStart.getX();
@@ -275,8 +323,32 @@ public class Polygon {
 	 * null otherwise.
 	 * @throws IntersectionException Thrown if there are infinitely many intersection points.
 	 */
-	static private Point2D.Double intersectLines(Point2D.Double point1Start, Point2D.Double point1End,
-										         Point2D.Double point2Start, Point2D.Double point2End) throws IntersectionException {
+	static Point2D.Double intersectLines(Point2D.Double point1Start, Point2D.Double point1End,
+										 Point2D.Double point2Start, Point2D.Double point2End) throws IntersectionException {
+		return intersectLines(point1Start, point1End, point2Start, point2End, false);
+	}
+	
+	/**
+	 * Computes the points of intersections of two lines given by their endpoints.
+	 * If there are infinitely many intersection points, i.e. the two lines agree on
+	 * some segment, an exception is thrown.
+	 * We use the method mentioned in
+	 * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+	 * 
+	 * @param point1Start Start point of first line.
+	 * @param point1End End point of first line.
+	 * @param point2Start Start point of second line.
+	 * @param point2End	 End point of second line.
+	 * @param secondLineProper If true the second line will be assumed to be an entire line 
+	 * (not only a segment) defined by the two given points, and if false it will be assumed
+	 * to be really a line segment.
+	 * @return The intersection point if there is one and 
+	 * null otherwise.
+	 * @throws IntersectionException Thrown if there are infinitely many intersection points.
+	 */
+	static Point2D.Double intersectLines(Point2D.Double point1Start, Point2D.Double point1End,
+										 Point2D.Double point2Start, Point2D.Double point2End,
+										 boolean secondLineProper) throws IntersectionException {
 		double dx1 = point1Start.getX() - point1End.getX();
 		double dx2 = point2Start.getX() - point2End.getX();
 		double dy1 = point1Start.getY() - point1End.getY();
@@ -289,9 +361,13 @@ public class Polygon {
 			double dy12 = point1Start.getY() - point2Start.getY();
 			double t = (dx12*dy2 - dy12*dx2)/denom;
 			double u = -(dx1*dy12 - dy1*dx12)/denom;
-			if(0 <= t && t <= 1 && 0 <= u && u <= 1) {
-				return new Point2D.Double(point1Start.getX() - t*dx1,
-						                  point1Start.getY() - t*dy1);
+			if(0 <= t && t <= 1) {
+				if( (0 <= u && u <= 1) || secondLineProper) {
+					return new Point2D.Double(point1Start.getX() - t*dx1,
+			                  				  point1Start.getY() - t*dy1);
+				} else {
+					return null;
+				}
 			} else {
 				return null;
 			}
