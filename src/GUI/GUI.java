@@ -168,11 +168,14 @@ public class GUI {
 		gbc_display.gridy = 0;
 		panel_display.add(display, gbc_display);
 		
+		display.setDrawnPolygon(drawnPol);
+		
 		panel_display.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent m) {
 				if(! btnStartDrawing.isEnabled()) {
 					drawnPol.addVertex(new Point2D.Double((double) m.getX(), (double) m.getY()));
+					display.repaint();
 				}
 			}
 		});
@@ -305,6 +308,7 @@ public class GUI {
 		btnCancelDrawing.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				drawnPol = new Polygon();
+				display.setDrawnPolygon(drawnPol);
 				btnStartDrawing.setEnabled(true);
 				btnFinishDrawing.setEnabled(false);
 				btnCancelDrawing.setEnabled(false);
@@ -323,6 +327,7 @@ public class GUI {
 				candidatePols.add(drawnPol);
 				//list_candidates.setListData(candidatePols);
 				drawnPol = new Polygon();
+				display.setDrawnPolygon(drawnPol);
 				btnStartDrawing.setEnabled(true);
 				btnCancelDrawing.setEnabled(false);
 				btnFinishDrawing.setEnabled(false);

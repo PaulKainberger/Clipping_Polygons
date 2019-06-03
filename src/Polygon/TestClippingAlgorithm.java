@@ -30,6 +30,7 @@ public class TestClippingAlgorithm {
 
 	@Test
 	public void testSutherlandHodgmanTriangle() {
+		// https://www.wolframalpha.com/input/?i=Polygon((10.0,-10.0),(30.0,-10.0),(30.0,70.0),(10.0,70.0)),+Polygon((0.0,0.0),(0.0,50.0),(50.0,0.0))
 		ClippingAlgorithm clipSH = new ClippingAlgorithm();
 		clipSH.setClippingPolygon(triangle);
 		clipSH.addCandidatePolygon(rectangle);

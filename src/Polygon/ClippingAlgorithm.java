@@ -110,15 +110,17 @@ public class ClippingAlgorithm {
 		
 		int numVertClip = clippingPolygon.getNumberVertices();
 		for(int i = 0; i < numVertClip; i++) {
-			result = new Polygon();
+			Polygon resultTmp = new Polygon(result);
+			result.clear();
+			
 			// two end points of current edge
 			Point2D.Double eBegin = clippingPolygon.getVertex(i);
-			Point2D.Double eEnd = clippingPolygon.getVertex((i + 1) % numVertClip);
+			Point2D.Double eEnd = clippingPolygon.getVertex((i + numVertClip - 1) % numVertClip);
 			
-			int numberVertRes = result.getNumberVertices();
+			int numberVertRes = resultTmp.getNumberVertices();
 			for(int  j = 0; j < numberVertRes; j++) {
-				Point2D.Double currentPoint = result.getVertex(j);
-				Point2D.Double prevPoint = result.getVertex((j+numberVertRes-1) % numberVertRes);
+				Point2D.Double currentPoint = resultTmp.getVertex(j);
+				Point2D.Double prevPoint = resultTmp.getVertex((j+numberVertRes-1) % numberVertRes);
 				
 				Point2D.Double intersection;
 				try {
