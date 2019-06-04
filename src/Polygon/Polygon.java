@@ -1,10 +1,8 @@
 package Polygon;
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -400,6 +398,20 @@ public class Polygon {
 			// segments do not overlap
 			return null;
 		}
+	}
+	
+	/**
+	 * Checks if a point is to the left of a line defined defined by two points, going through
+	 * edge1 and edge2 (coming from the direction of edge1).
+	 * 
+	 * @param point Point for which we want to check the position.
+	 * @param edge1 One point of the line.
+	 * @param edge2 Second point of the line.
+	 * @return True if point is to the right of the line. 
+	 */
+	public static boolean inside(Point2D.Double point, Point2D.Double edge1, Point2D.Double edge2) {
+		return (point.getX() - edge2.getX()) * (edge1.getY() - edge2.getY()) >
+		       (point.getY() - edge2.getY()) * (edge1.getX() - edge2.getX());
 	}
 	
 	/**

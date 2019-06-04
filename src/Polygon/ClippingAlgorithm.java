@@ -108,19 +108,27 @@ public class ClippingAlgorithm {
 		
 		Polygon result = new Polygon(candidate);
 		
+		boolean clockwiseOriented = clippingPolygon.orientedClockwise();
+		
 		int numVertClip = clippingPolygon.getNumberVertices();
 		for(int i = 0; i < numVertClip; i++) {
+			// two end points of current edge
+			Point2D.Double eBegin, eEnd;
+			if(clockwiseOriented) {
+				eBegin = clippingPolygon.getVertex(i);
+				eEnd = clippingPolygon.getVertex((i + numVertClip - 1) % numVertClip);
+			} else {
+				eBegin = clippingPolygon.getVertex(numVertClip - i - 1);
+				eEnd = clippingPolygon.getVertex((numVertClip - i) % numVertClip);
+			}
+			
 			Polygon resultTmp = new Polygon(result);
 			result.clear();
-			
-			// two end points of current edge
-			Point2D.Double eBegin = clippingPolygon.getVertex(i);
-			Point2D.Double eEnd = clippingPolygon.getVertex((i + numVertClip - 1) % numVertClip);
 			
 			int numberVertRes = resultTmp.getNumberVertices();
 			for(int  j = 0; j < numberVertRes; j++) {
 				Point2D.Double currentPoint = resultTmp.getVertex(j);
-				Point2D.Double prevPoint = resultTmp.getVertex((j+numberVertRes-1) % numberVertRes);
+				Point2D.Double prevPoint = resultTmp.getVertex((j + numberVertRes - 1) % numberVertRes);
 				
 				Point2D.Double intersection;
 				try {
@@ -128,12 +136,12 @@ public class ClippingAlgorithm {
 				} catch(IntersectionException e) {
 					return null;
 				}
-				if(clippingPolygon.contains(currentPoint)) {
-					if(!clippingPolygon.contains(prevPoint)) {
+				if(Polygon.inside(currentPoint, eBegin, eEnd)) {
+					if(!Polygon.inside(prevPoint, eBegin, eEnd)) {
 						result.addVertex(intersection);
 					}
 					result.addVertex(currentPoint);
-				} else if(clippingPolygon.contains(prevPoint)) {
+				} else if(Polygon.inside(prevPoint, eBegin, eEnd)) {
 					result.addVertex(intersection);
 				}
 			}

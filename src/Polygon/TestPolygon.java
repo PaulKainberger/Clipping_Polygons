@@ -339,4 +339,11 @@ public class TestPolygon {
 		Rectangle2D.Double bounds = poly.getBounds();
 		assertEquals(new Rectangle2D.Double(1.1, 1.2, 0, 0), bounds);
 	}
+	
+	@Test
+	public void testInside() {
+		assertTrue(Polygon.inside(p3, p2, p1));
+		assertTrue(Polygon.inside(p1, p3, p2));
+		assertFalse(Polygon.inside(p1, p2, p3));
+	}
 }
