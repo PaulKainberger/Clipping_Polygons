@@ -67,7 +67,10 @@ public class ClippingAlgorithm {
 	 * Returns the result of the clipping algorithm.
 	 * @return The set of result polygons.
 	 */
-	public Set<Polygon> getResult(){
+	public Set<Polygon> getResult() {
+		// remove empty polgon
+		Polygon emptyPolygon = new Polygon();
+		resultPolygons.remove(emptyPolygon);
 		return resultPolygons;
 	}
 	
@@ -77,6 +80,8 @@ public class ClippingAlgorithm {
 	 * If the clipping polygon is not convex false will be returned and nothing will happen. 
 	 * More details on the algorithm can be found e.g. on Wikipedia, see:
 	 * https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm
+	 * If the candidate polygons are not convex there might be double edges in the resulting
+	 * polygons.
 	 * 
 	 * @return Whether the clipping was successful.
 	 */
@@ -104,7 +109,13 @@ public class ClippingAlgorithm {
 	 * @return The clipped polygon.
 	 */
 	private Polygon clipSutherlandHodgman(Polygon candidate) {
-		// add exception for single point in clipping poly?!
+		if(candidate.isPoint()) {
+			if(clippingPolygon.contains(candidate.getVertex(0))) {
+				return new Polygon(candidate);
+			} else {
+				return new Polygon();
+			}
+		}
 		
 		Polygon result = new Polygon(candidate);
 		
@@ -149,7 +160,7 @@ public class ClippingAlgorithm {
 		
 		return result;
 	}
-	
+		
 	/**
 	 * Runs the Weiler-Atherton algorithm.
 	 * @return Whether the clipping was successful.

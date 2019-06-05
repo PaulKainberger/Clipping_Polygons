@@ -13,6 +13,9 @@ public class TestClippingAlgorithm {
 	private Polygon triangleInv;
 	private Polygon rectangle;
 	private Polygon horseshoe;
+	private Polygon onePoint;
+	private Polygon onePoint2;
+	private Polygon empty;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -41,6 +44,14 @@ public class TestClippingAlgorithm {
 		horseshoe.addVertex(-10, 23);
 		horseshoe.addVertex(10, 23);
 		horseshoe.addVertex(10, 20);
+		
+		onePoint = new Polygon();
+		onePoint.addVertex(5, 5);
+		
+		onePoint2 = new Polygon();
+		onePoint2.addVertex(0, 5);
+		
+		empty = new Polygon();
 	}
 
 	@After
@@ -62,9 +73,7 @@ public class TestClippingAlgorithm {
 		clipped.addVertex(10, 0);
 		clipped.addVertex(30, 0);
 		clipped.addVertex(30, 20);
-		for(Polygon p : shResultPolys) {
-			assertTrue(p.equals(clipped));
-		}
+		assertTrue(shResultPolys.contains(clipped));
 	}
 	
 	@Test
@@ -82,9 +91,7 @@ public class TestClippingAlgorithm {
 		clipped.addVertex(10, 0);
 		clipped.addVertex(30, 0);
 		clipped.addVertex(30, 20);
-		for(Polygon p : shResultPolys) {
-			assertEquals(p, clipped);
-		}
+		assertTrue(shResultPolys.contains(clipped));
 	}
 
 	@Test
@@ -92,7 +99,6 @@ public class TestClippingAlgorithm {
 		ClippingAlgorithm clipSH = new ClippingAlgorithm();
 		clipSH.setClippingPolygon(triangle);
 		clipSH.addCandidatePolygon(horseshoe);
-		System.out.println(horseshoe.toString());
 		boolean shResult = clipSH.SutherlandHodgman();
 		assertTrue(shResult);
 		Set<Polygon> shResultPolys = clipSH.getResult();
@@ -106,8 +112,56 @@ public class TestClippingAlgorithm {
 		clipped.addVertex(0, 23);
 		clipped.addVertex(10, 23);
 		clipped.addVertex(10, 20);
-		for(Polygon p : shResultPolys) {
-			assertEquals(p, clipped);
-		}
+		assertTrue(shResultPolys.contains(clipped));
+	}
+	
+	@Test
+	public void testSutherlandHodgmanOnePointIn() {
+		ClippingAlgorithm clipSH = new ClippingAlgorithm();
+		clipSH.setClippingPolygon(triangle);
+		clipSH.addCandidatePolygon(onePoint);
+		boolean shResult = clipSH.SutherlandHodgman();
+		assertTrue(shResult);
+		Set<Polygon> shResultPolys = clipSH.getResult();
+		assertEquals(1, shResultPolys.size());
+		Polygon clipped = new Polygon();
+		clipped.addVertex(5, 5);
+		assertTrue(shResultPolys.contains(clipped));
+	}
+	
+	@Test
+	public void testSutherlandHodgmanOnePointOut() {
+		ClippingAlgorithm clipSH = new ClippingAlgorithm();
+		clipSH.setClippingPolygon(rectangle);
+		clipSH.addCandidatePolygon(onePoint);
+		boolean shResult = clipSH.SutherlandHodgman();
+		assertTrue(shResult);
+		Set<Polygon> shResultPolys = clipSH.getResult();
+		assertEquals(0, shResultPolys.size());
+	}
+	
+	@Test
+	public void testSutherlandHodgmanOnePointBorder() {
+		ClippingAlgorithm clipSH = new ClippingAlgorithm();
+		clipSH.setClippingPolygon(triangle);
+		clipSH.addCandidatePolygon(onePoint2);
+		boolean shResult = clipSH.SutherlandHodgman();
+		assertTrue(shResult);
+		Set<Polygon> shResultPolys = clipSH.getResult();
+		assertEquals(1, shResultPolys.size());
+		Polygon clipped = new Polygon();
+		clipped.addVertex(0, 5);
+		assertTrue(shResultPolys.contains(clipped));
+	}
+	
+	@Test
+	public void testSutherlandHodgmanEmpty() {
+		ClippingAlgorithm clipSH = new ClippingAlgorithm();
+		clipSH.setClippingPolygon(triangle);
+		clipSH.addCandidatePolygon(empty);
+		boolean shResult = clipSH.SutherlandHodgman();
+		assertTrue(shResult);
+		Set<Polygon> shResultPolys = clipSH.getResult();
+		assertTrue(shResultPolys.isEmpty());
 	}
 }

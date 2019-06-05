@@ -161,6 +161,15 @@ public class Polygon {
 	}
 	
 	/**
+	 * Checks if the polygon is only one point.
+	 * 
+	 * @return True if it is exactly one point and false otherwise.
+	 */
+	public boolean isPoint() {
+		return getNumberVertices() == 1;
+	}
+	
+	/**
 	 * Getter for vertex at given index. Indices start with 0,
 	 * so the last vertex is at index getNumberVertices() - 1
 	 * 
@@ -614,8 +623,8 @@ public class Polygon {
 	
 	/**
 	 * Checks if two objects are the same.
-	 * Two polygons are considered the same if they contain
-	 * the same vertices in the same order.
+	 * Two polygons are considered the same if they contain 
+	 * the exact (not up to epsilon) same vertices in the same order.
 	 * 
 	 * @param polygon The second polygon which we want to check if it 
 	 * is equal to this.
@@ -636,13 +645,30 @@ public class Polygon {
 				int leastIndexSec = secPolygon.getLeastVertex();
 				int leastIndexThis = getLeastVertex();
 				for(int i = 0; i < getNumberVertices(); i++) {
-					if(!pointsEqualEps(secPolygon.getVertex( (leastIndexSec + i) % numVertices),(getVertex((leastIndexThis + i) % numVertices)))) {
+					if(!(secPolygon.getVertex( (leastIndexSec + i) % numVertices).equals(getVertex((leastIndexThis + i) % numVertices)))) {
 						return false;
 					}
 				}
 				return true;
 			}
 		}
+	}
+	
+	/**
+	 * Returns the hash code of the polygon. The code can differ if polygons are equal
+	 * up to an epsilon, but if they are exactly equal it will be the same.
+	 * 
+	 * @return Hash code of polygon.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		int numVertices = getNumberVertices();
+		int least = getLeastVertex();
+		for(int i = 0; i < numVertices; i++) {
+			hash += getVertex((i + least) % numVertices).hashCode();
+		}
+		return hash;
 	}
 	
 	/**
