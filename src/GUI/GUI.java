@@ -14,39 +14,28 @@ import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.ScrollPane;
-import java.awt.Toolkit;
 
 import javax.swing.JTextArea;
 import java.awt.Dimension;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import javax.swing.JTextPane;
 import javax.swing.JList;
-import javax.swing.AbstractListModel;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import java.awt.Component;
 import java.awt.Font;
-import java.awt.GridLayout;
-import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import java.awt.Color;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.ScrollPaneConstants;
 
 /**
  * @author Paul
@@ -55,9 +44,10 @@ import javax.swing.ScrollPaneConstants;
 public class GUI {
 
 	private JFrame frmClippingPolygons;
-	private Polygon clippingPol;
-	private Polygon drawnPol = new Polygon();
+	
+	private Vector<Polygon> clippingPols = new Vector<Polygon>();
 	private Vector<Polygon> candidatePols = new Vector<Polygon>();
+	private Polygon drawnPol = new Polygon();
 	
 	private PolygonGraphic display = new PolygonGraphic();
 	
@@ -76,9 +66,13 @@ public class GUI {
 	private JRadioButton rdbtnClippingPolygon = new JRadioButton("Clipping polygon");
 	private JRadioButton rdbtnCandidatePolygon = new JRadioButton("Candidate polygon");
 	
-	private JList list_clipping = new JList();
-	private JList list_candidates = new JList();
-	private JList list_clipped = new JList();
+	private JList<String> list_clipping = new JList<String>();
+	private JList<String> list_candidates = new JList<String>();
+	private JList<String> list_clipped = new JList<String>();
+	
+	private ArrayList<Integer> indicesClipping = new ArrayList<Integer>();
+	private ArrayList<Integer> indicesCandidates = new ArrayList<Integer>();
+	//private ArrayList<Integer> indicesClipped = new ArrayList<Integer>();
 	
 	/**
 	 * Launch the application.
@@ -107,6 +101,14 @@ public class GUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		// set model for JLists, such that deleting elements is possible.
+		list_clipping.setModel(new DefaultListModel<String>());
+		DefaultListModel<String> model_clipping = (DefaultListModel<String>) list_clipping.getModel();
+		list_candidates.setModel(new DefaultListModel<String>());
+		DefaultListModel<String> model_candidates = (DefaultListModel<String>) list_candidates.getModel();
+		list_clipped.setModel(new DefaultListModel<String>());
+		DefaultListModel<String> model_clipped = (DefaultListModel<String>) list_clipped.getModel();
 		
 	/**
 	* Frame.
@@ -324,8 +326,18 @@ public class GUI {
 		panel_draw.add(btnFinishDrawing, gbc_btnFinishDrawing);
 		btnFinishDrawing.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				candidatePols.add(drawnPol);
-				//list_candidates.setListData(candidatePols);
+				if(rdbtnClippingPolygon.isSelected()) {
+					clippingPols.add(drawnPol);
+					int i = getFreeIndex(indicesClipping);
+					indicesClipping.add(i, i);
+					model_clipping.add(i, "Clipping Polygon " + (i + 1));
+				}
+				if(rdbtnCandidatePolygon.isSelected()) {
+					candidatePols.add(drawnPol);
+					int i = getFreeIndex(indicesCandidates);
+					indicesCandidates.add(i, i);
+					model_candidates.add(i, "Candidate Polygon " + (i + 1));
+				}
 				drawnPol = new Polygon();
 				display.setDrawnPolygon(drawnPol);
 				btnStartDrawing.setEnabled(true);
@@ -333,20 +345,6 @@ public class GUI {
 				btnFinishDrawing.setEnabled(false);
 			}
 		});
-		
-		/*JButton btnNewButton = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.anchor = GridBagConstraints.SOUTHEAST;
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 1;
-		panel_1.add(btnNewButton, gbc_btnNewButton);
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				display.draw = true;
-				display.repaint();
-			}
-		});*/
 		
 	/**
 	* Settings - Panel Manage.
@@ -415,18 +413,10 @@ public class GUI {
 		gbc_scrollPane_listClipping.gridx = 0;
 		gbc_scrollPane_listClipping.gridy = 1;
 		panel_manage.add(scrollPane_listClipping, gbc_scrollPane_listClipping);
+		list_clipping.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_listClipping.setViewportView(list_clipping);
 		
 		list_clipping.setBorder(null);
-		list_clipping.setModel(new AbstractListModel() {
-			String[] values = new String[] {"Clipping Polygon 1", "Clipping Polygon 2"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
 		list_clipping.setSelectedIndex(0);
 		
 		JScrollPane scrollPane_listCandidate = new JScrollPane();
@@ -439,15 +429,6 @@ public class GUI {
 		scrollPane_listCandidate.setViewportView(list_candidates);
 		
 		list_candidates.setBorder(null);
-		list_candidates.setModel(new AbstractListModel() {
-			String[] values = new String[] {"Candidate Polygon 1", "Candidate Polygon 2", "Candidate Polygon 3", "Candidate Polygon 4", "Candidate Polygon 5", "Candidate Polygon 6", "Candidate Polygon 7", "Candidate Polygon 8", "Candidate Polygon 9", "Candidate Polygon 10", "Candidate Polygon 11", "Candidate Polygon 12", "Candidate Polygon 13", "Candidate Polygon 14", "Candidate Polygon 15", "Candidate Polygon 16", "Candidate Polygon 17", "Candidate Polygon 18"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
 		list_candidates.setSelectedIndex(0);
 		
 		JScrollPane scrollPane_listClipped = new JScrollPane();
@@ -460,18 +441,17 @@ public class GUI {
 		scrollPane_listClipped.setViewportView(list_clipped);
 		
 		list_clipped.setBorder(null);
-		list_clipped.setModel(new AbstractListModel() {
-			String[] values = new String[] {"Clipped Polygon 1", "Clipped Polygon 2", "Clipped Polygon 3"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
 		list_clipped.setSelectedIndex(0);
 		
 		JButton btnDelete_clipping = new JButton("Delete selected");
+		btnDelete_clipping.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int selectedIndex = list_clipping.getSelectedIndex();
+				if(selectedIndex != -1) {
+					model_clipping.remove(selectedIndex);
+				}
+			}
+		});
 		GridBagConstraints gbc_btnDelete_clipping = new GridBagConstraints();
 		gbc_btnDelete_clipping.insets = new Insets(0, 0, 0, 5);
 		gbc_btnDelete_clipping.gridx = 0;
@@ -479,6 +459,16 @@ public class GUI {
 		panel_manage.add(btnDelete_clipping, gbc_btnDelete_clipping);
 		
 		JButton btnDelete_candidate = new JButton("Delete selected");
+		btnDelete_candidate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				while (!list_candidates.isSelectionEmpty()) {
+					int selectedIndex = list_candidates.getSelectedIndex();
+					int polNumber = getPolygonNumber(list_candidates.getSelectedValue());
+					indicesCandidates.remove(polNumber - 1);
+					model_candidates.remove(selectedIndex);
+				}
+			}
+		});
 		GridBagConstraints gbc_btnDelete_candidate = new GridBagConstraints();
 		gbc_btnDelete_candidate.insets = new Insets(0, 0, 0, 5);
 		gbc_btnDelete_candidate.gridx = 1;
@@ -518,8 +508,8 @@ public class GUI {
 		gbl_panel_run.rowWeights = new double[]{0.0, 1.0};
 		panel_run.setLayout(gbl_panel_run);
 		
-		JComboBox comboBox_algorithms = new JComboBox();
-		comboBox_algorithms.setModel(new DefaultComboBoxModel(new String[] {"Automatic", "Sutherland-Hodgman", "Weiler-Atherton", "Greiner-Hormann"}));
+		JComboBox<String> comboBox_algorithms = new JComboBox<String>();
+		comboBox_algorithms.setModel(new DefaultComboBoxModel<String>(new String[] {"Automatic", "Sutherland-Hodgman", "Weiler-Atherton", "Greiner-Hormann"}));
 		comboBox_algorithms.setToolTipText("");
 		GridBagConstraints gbc_comboBox_algorithms = new GridBagConstraints();
 		gbc_comboBox_algorithms.insets = new Insets(0, 0, 5, 5);
@@ -553,4 +543,30 @@ public class GUI {
 		frmClippingPolygons.setJMenuBar(menuBar);
 		
 	}
+	
+	private int getFreeIndex(ArrayList<Integer> list) {
+		if(list.isEmpty())
+			return 0;
+		if(list.size() == 1) {
+			if(list.get(0) == 0)
+				return 1;
+			return 0;
+		}
+		int i = 0;
+		while (list.get(i) == list.get(i+1) - 1) {
+			i++;
+			if(i == list.size()-1)
+				return i + 1;
+		}
+		return i + 1;
+	}
+	
+	private int getPolygonNumber(String p) {
+		int l = p.length() - 1;
+		while(! (p.charAt(l) == ' ')) {
+			l--;
+		}
+		return Integer.parseInt(p.substring(l+1));
+	}
+	
 }
