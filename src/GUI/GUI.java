@@ -47,6 +47,7 @@ public class GUI {
 	
 	private Vector<Polygon> clippingPols = new Vector<Polygon>();
 	private Vector<Polygon> candidatePols = new Vector<Polygon>();
+	private Vector<Polygon> clippedPols = new Vector<Polygon>();
 	private Polygon drawnPol = new Polygon();
 	
 	private PolygonGraphic display = new PolygonGraphic();
@@ -72,7 +73,6 @@ public class GUI {
 	
 	private ArrayList<Integer> indicesClipping = new ArrayList<Integer>();
 	private ArrayList<Integer> indicesCandidates = new ArrayList<Integer>();
-	//private ArrayList<Integer> indicesClipped = new ArrayList<Integer>();
 	
 	/**
 	 * Launch the application.
@@ -109,6 +109,10 @@ public class GUI {
 		DefaultListModel<String> model_candidates = (DefaultListModel<String>) list_candidates.getModel();
 		list_clipped.setModel(new DefaultListModel<String>());
 		DefaultListModel<String> model_clipped = (DefaultListModel<String>) list_clipped.getModel();
+		
+		list_clipping.setFixedCellWidth(50);
+		list_candidates.setFixedCellWidth(50);
+		list_clipped.setFixedCellWidth(50);
 		
 	/**
 	* Frame.
@@ -327,16 +331,16 @@ public class GUI {
 		btnFinishDrawing.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(rdbtnClippingPolygon.isSelected()) {
-					clippingPols.add(drawnPol);
 					int i = getFreeIndex(indicesClipping);
 					indicesClipping.add(i, i);
-					model_clipping.add(i, "Clipping Polygon " + (i + 1));
+					model_clipping.add(i, "Clipping P. " + (i + 1));
+					clippingPols.add(i, drawnPol);
 				}
 				if(rdbtnCandidatePolygon.isSelected()) {
-					candidatePols.add(drawnPol);
 					int i = getFreeIndex(indicesCandidates);
 					indicesCandidates.add(i, i);
-					model_candidates.add(i, "Candidate Polygon " + (i + 1));
+					model_candidates.add(i, "Candidate P. " + (i + 1));
+					candidatePols.add(i, drawnPol);
 				}
 				drawnPol = new Polygon();
 				display.setDrawnPolygon(drawnPol);
@@ -446,9 +450,11 @@ public class GUI {
 		JButton btnDelete_clipping = new JButton("Delete selected");
 		btnDelete_clipping.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int selectedIndex = list_clipping.getSelectedIndex();
-				if(selectedIndex != -1) {
+				while (!list_clipping.isSelectionEmpty()) {
+					int selectedIndex = list_clipping.getSelectedIndex();
+					indicesClipping.remove(selectedIndex);
 					model_clipping.remove(selectedIndex);
+					clippingPols.remove(selectedIndex);
 				}
 			}
 		});
@@ -463,10 +469,16 @@ public class GUI {
 			public void actionPerformed(ActionEvent arg0) {
 				while (!list_candidates.isSelectionEmpty()) {
 					int selectedIndex = list_candidates.getSelectedIndex();
-					int polNumber = getPolygonNumber(list_candidates.getSelectedValue());
-					indicesCandidates.remove(polNumber - 1);
+					indicesCandidates.remove(selectedIndex);
 					model_candidates.remove(selectedIndex);
+					candidatePols.remove(selectedIndex);
 				}
+				/*String s = "";
+				for(int i = 0; i < candidatePols.size(); i++) {
+					s += candidatePols.elementAt(i);
+					s += "\n";
+				}
+				txtReport.setText(s);*/
 			}
 		});
 		GridBagConstraints gbc_btnDelete_candidate = new GridBagConstraints();
@@ -477,12 +489,11 @@ public class GUI {
 		
 		btnDelete_clipped.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				txtReport.setText("" + list_clipped.getSelectedIndex() + "\n" + list_clipped.getSelectedValue());
-				list_clipped.remove(list_clipped.getSelectedIndex());
-				list_clipped.repaint();
-				list_clipped.revalidate();
-				list_clipped.updateUI();
-				list_clipped.validate();
+				while (!list_clipped.isSelectionEmpty()) {
+					int selectedIndex = list_clipped.getSelectedIndex();
+					model_clipped.remove(selectedIndex);
+					clippedPols.remove(selectedIndex);
+				}
 			}
 		});
 		GridBagConstraints gbc_btnDelete_clipped = new GridBagConstraints();
@@ -547,26 +558,11 @@ public class GUI {
 	private int getFreeIndex(ArrayList<Integer> list) {
 		if(list.isEmpty())
 			return 0;
-		if(list.size() == 1) {
-			if(list.get(0) == 0)
-				return 1;
-			return 0;
-		}
 		int i = 0;
-		while (list.get(i) == list.get(i+1) - 1) {
+		while (i < list.size() && list.get(i) == i) {
 			i++;
-			if(i == list.size()-1)
-				return i + 1;
 		}
-		return i + 1;
-	}
-	
-	private int getPolygonNumber(String p) {
-		int l = p.length() - 1;
-		while(! (p.charAt(l) == ' ')) {
-			l--;
-		}
-		return Integer.parseInt(p.substring(l+1));
+		return i;
 	}
 	
 }
