@@ -138,7 +138,6 @@ public class GUI {
 		panel_display_out.setBorder(null);
 		GridBagConstraints gbc_panel_display_out = new GridBagConstraints();
 		gbc_panel_display_out.fill = GridBagConstraints.BOTH;
-		gbc_panel_display_out.insets = new Insets(0, 0, 0, 5);
 		gbc_panel_display_out.gridx = 0;
 		gbc_panel_display_out.gridy = 0;
 		frmClippingPolygons.getContentPane().add(panel_display_out, gbc_panel_display_out);
@@ -248,7 +247,7 @@ public class GUI {
 		txtDrawAPolygon.setEditable(false);
 		txtDrawAPolygon.setText("Draw a polygon");
 		GridBagConstraints gbc_txtDrawAPolygon = new GridBagConstraints();
-		gbc_txtDrawAPolygon.fill = GridBagConstraints.BOTH;
+		gbc_txtDrawAPolygon.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtDrawAPolygon.insets = new Insets(0, 0, 5, 5);
 		gbc_txtDrawAPolygon.gridx = 0;
 		gbc_txtDrawAPolygon.gridy = 0;
@@ -265,7 +264,6 @@ public class GUI {
 		});
 		rdbtnClippingPolygon.setSelected(true);
 		GridBagConstraints gbc_rdbtnClippingPolygon = new GridBagConstraints();
-		gbc_rdbtnClippingPolygon.anchor = GridBagConstraints.NORTH;
 		gbc_rdbtnClippingPolygon.fill = GridBagConstraints.HORIZONTAL;
 		gbc_rdbtnClippingPolygon.insets = new Insets(0, 0, 5, 5);
 		gbc_rdbtnClippingPolygon.gridx = 0;
@@ -281,7 +279,6 @@ public class GUI {
 			}
 		});
 		GridBagConstraints gbc_rdbtnCandidatePolygon = new GridBagConstraints();
-		gbc_rdbtnCandidatePolygon.anchor = GridBagConstraints.NORTH;
 		gbc_rdbtnCandidatePolygon.fill = GridBagConstraints.HORIZONTAL;
 		gbc_rdbtnCandidatePolygon.insets = new Insets(0, 0, 0, 5);
 		gbc_rdbtnCandidatePolygon.gridx = 0;
@@ -289,7 +286,6 @@ public class GUI {
 		panel_draw.add(rdbtnCandidatePolygon, gbc_rdbtnCandidatePolygon);
 		
 		GridBagConstraints gbc_btnStartDrawing = new GridBagConstraints();
-		gbc_btnStartDrawing.anchor = GridBagConstraints.NORTH;
 		gbc_btnStartDrawing.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnStartDrawing.insets = new Insets(0, 0, 5, 0);
 		gbc_btnStartDrawing.gridx = 1;
@@ -305,7 +301,6 @@ public class GUI {
 		
 		btnCancelDrawing.setEnabled(false);
 		GridBagConstraints gbc_btnCancelDrawing = new GridBagConstraints();
-		gbc_btnCancelDrawing.anchor = GridBagConstraints.SOUTH;
 		gbc_btnCancelDrawing.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnCancelDrawing.insets = new Insets(0, 0, 5, 0);
 		gbc_btnCancelDrawing.gridx = 1;
@@ -323,7 +318,6 @@ public class GUI {
 		
 		btnFinishDrawing.setEnabled(false);
 		GridBagConstraints gbc_btnFinishDrawing = new GridBagConstraints();
-		gbc_btnFinishDrawing.anchor = GridBagConstraints.SOUTH;
 		gbc_btnFinishDrawing.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnFinishDrawing.gridx = 1;
 		gbc_btnFinishDrawing.gridy = 2;
@@ -374,9 +368,9 @@ public class GUI {
 		txtClippingPolygons.setBorder(null);
 		txtClippingPolygons.setText("Clipping polygons");
 		GridBagConstraints gbc_txtClippingPolygons = new GridBagConstraints();
+		gbc_txtClippingPolygons.insets = new Insets(0, 5, 5, 0);
 		gbc_txtClippingPolygons.anchor = GridBagConstraints.SOUTH;
 		gbc_txtClippingPolygons.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtClippingPolygons.insets = new Insets(0, 0, 5, 5);
 		gbc_txtClippingPolygons.gridx = 0;
 		gbc_txtClippingPolygons.gridy = 0;
 		panel_manage.add(txtClippingPolygons, gbc_txtClippingPolygons);
@@ -390,7 +384,7 @@ public class GUI {
 		GridBagConstraints gbc_txtCandidatePolygons = new GridBagConstraints();
 		gbc_txtCandidatePolygons.anchor = GridBagConstraints.SOUTH;
 		gbc_txtCandidatePolygons.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtCandidatePolygons.insets = new Insets(0, 0, 5, 5);
+		gbc_txtCandidatePolygons.insets = new Insets(0, 0, 5, 0);
 		gbc_txtCandidatePolygons.gridx = 1;
 		gbc_txtCandidatePolygons.gridy = 0;
 		panel_manage.add(txtCandidatePolygons, gbc_txtCandidatePolygons);
@@ -404,7 +398,7 @@ public class GUI {
 		GridBagConstraints gbc_txtClippedPolygons = new GridBagConstraints();
 		gbc_txtClippedPolygons.anchor = GridBagConstraints.SOUTH;
 		gbc_txtClippedPolygons.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtClippedPolygons.insets = new Insets(0, 0, 5, 0);
+		gbc_txtClippedPolygons.insets = new Insets(0, 0, 5, 5);
 		gbc_txtClippedPolygons.gridx = 2;
 		gbc_txtClippedPolygons.gridy = 0;
 		panel_manage.add(txtClippedPolygons, gbc_txtClippedPolygons);
@@ -413,7 +407,7 @@ public class GUI {
 		JScrollPane scrollPane_listClipping = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_listClipping = new GridBagConstraints();
 		gbc_scrollPane_listClipping.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_listClipping.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane_listClipping.insets = new Insets(0, 5, 5, 0);
 		gbc_scrollPane_listClipping.gridx = 0;
 		gbc_scrollPane_listClipping.gridy = 1;
 		panel_manage.add(scrollPane_listClipping, gbc_scrollPane_listClipping);
@@ -425,8 +419,8 @@ public class GUI {
 		
 		JScrollPane scrollPane_listCandidate = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_listCandidate = new GridBagConstraints();
+		gbc_scrollPane_listCandidate.insets = new Insets(0, 5, 5, 5);
 		gbc_scrollPane_listCandidate.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_listCandidate.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane_listCandidate.gridx = 1;
 		gbc_scrollPane_listCandidate.gridy = 1;
 		panel_manage.add(scrollPane_listCandidate, gbc_scrollPane_listCandidate);
@@ -438,7 +432,7 @@ public class GUI {
 		JScrollPane scrollPane_listClipped = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_listClipped = new GridBagConstraints();
 		gbc_scrollPane_listClipped.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_listClipped.insets = new Insets(0, 0, 5, 0);
+		gbc_scrollPane_listClipped.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane_listClipped.gridx = 2;
 		gbc_scrollPane_listClipped.gridy = 1;
 		panel_manage.add(scrollPane_listClipped, gbc_scrollPane_listClipped);
@@ -459,7 +453,7 @@ public class GUI {
 			}
 		});
 		GridBagConstraints gbc_btnDelete_clipping = new GridBagConstraints();
-		gbc_btnDelete_clipping.insets = new Insets(0, 0, 0, 5);
+		gbc_btnDelete_clipping.insets = new Insets(0, 5, 5, 0);
 		gbc_btnDelete_clipping.gridx = 0;
 		gbc_btnDelete_clipping.gridy = 2;
 		panel_manage.add(btnDelete_clipping, gbc_btnDelete_clipping);
@@ -482,7 +476,7 @@ public class GUI {
 			}
 		});
 		GridBagConstraints gbc_btnDelete_candidate = new GridBagConstraints();
-		gbc_btnDelete_candidate.insets = new Insets(0, 0, 0, 5);
+		gbc_btnDelete_candidate.insets = new Insets(0, 5, 5, 5);
 		gbc_btnDelete_candidate.gridx = 1;
 		gbc_btnDelete_candidate.gridy = 2;
 		panel_manage.add(btnDelete_candidate, gbc_btnDelete_candidate);
@@ -497,6 +491,7 @@ public class GUI {
 			}
 		});
 		GridBagConstraints gbc_btnDelete_clipped = new GridBagConstraints();
+		gbc_btnDelete_clipped.insets = new Insets(0, 0, 5, 5);
 		gbc_btnDelete_clipped.gridx = 2;
 		gbc_btnDelete_clipped.gridy = 2;
 		panel_manage.add(btnDelete_clipped, gbc_btnDelete_clipped);
@@ -523,17 +518,16 @@ public class GUI {
 		comboBox_algorithms.setModel(new DefaultComboBoxModel<String>(new String[] {"Automatic", "Sutherland-Hodgman", "Weiler-Atherton", "Greiner-Hormann"}));
 		comboBox_algorithms.setToolTipText("");
 		GridBagConstraints gbc_comboBox_algorithms = new GridBagConstraints();
-		gbc_comboBox_algorithms.insets = new Insets(0, 0, 5, 5);
 		gbc_comboBox_algorithms.gridx = 0;
 		gbc_comboBox_algorithms.gridy = 0;
 		panel_run.add(comboBox_algorithms, gbc_comboBox_algorithms);
 		
 		JButton btnClipPolygons = new JButton("Clip polygons");
 		GridBagConstraints gbc_btnClipPolygons = new GridBagConstraints();
-		gbc_btnClipPolygons.insets = new Insets(0, 0, 5, 0);
 		gbc_btnClipPolygons.gridx = 1;
 		gbc_btnClipPolygons.gridy = 0;
 		panel_run.add(btnClipPolygons, gbc_btnClipPolygons);
+		txtReport.setLineWrap(true);
 		
 		txtReport.setEditable(false);
 		txtReport.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Report", TitledBorder.CENTER, TitledBorder.BELOW_TOP, null, new Color(0, 0, 0)));
@@ -555,6 +549,12 @@ public class GUI {
 		
 	}
 	
+	/**
+	 * In the ordered ArrayList<Integer> list, the method finds the first index i, such that
+	 * list.get(i) != i.
+	 * @param list An ordered ArrayList containing nonnegative integers without duplicates.
+	 * @return The first index i, such that list.get(i) != i.
+	 */
 	private int getFreeIndex(ArrayList<Integer> list) {
 		if(list.isEmpty())
 			return 0;
