@@ -1,11 +1,14 @@
 package Polygon;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import Polygon.greinerHorman.GreinerHormanPolygon;
+import Polygon.greinerHorman.GreinerHormanVertex;
 
 
 /**
@@ -289,7 +292,26 @@ public class ClippingAlgorithm {
 	 * @return Whether the clipping was successful.
 	 */
 	public boolean GreinerHorman() {
-		//TODO: implement Greiner-Horman algorithm
+		for(Polygon candidate : candidatePolygons) {
+			Polygon currentClippingPolygon = new GreinerHormanPolygon(clippingPolygon);
+			Polygon currentCandidatePolygons = new GreinerHormanPolygon(candidate);
+			//TODO: implement Greiner-Horman algorithm
+		}
 		return false;
+	}
+	
+	public void GreinerHormanCreateIntersectionVertices() {
+		//TODO: implement creating intersection vertices, 
+		//after intersect lines method was adopted to return alpha values
+	}
+	
+	public void GreinerHormanMarkEntryExit(GreinerHormanPolygon polygon1, GreinerHormanPolygon polygon2) {
+		boolean inside = polygon1.contains(polygon2.getVertex(0));
+		for(Double vertex : polygon2.vertices) {
+			if(((GreinerHormanVertex)vertex).isIntersect()) {
+				((GreinerHormanVertex)vertex).setEntryExit(!inside);
+				inside = !inside;
+			}
+		}
 	}
 }
