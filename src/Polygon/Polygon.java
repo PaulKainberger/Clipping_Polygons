@@ -706,18 +706,18 @@ public class Polygon {
 		vertices.clear();
 	}
 
-	private int[] getXintValues() {
+	private int[] getScaledXintValues(double scalingFactor, int screenWidth) {
 		int[] x = new int[getNumberVertices()];
 		for(int i=0; i<getNumberVertices(); i++) {
-			x[i] = (int)getVertex(i).getX();
+			x[i] = (int)(getVertex(i).getX()*scalingFactor)+screenWidth/2;
 		}
 		return x;
 	}
 
-	private int[] getYintValues() {
+	private int[] getScaledYintValues(double scalingFactor, int screenHeight) {
 		int[] y = new int[getNumberVertices()];
 		for(int i=0; i<getNumberVertices(); i++) {
-			y[i] = (int)getVertex(i).getY();
+			y[i] = (int)(getVertex(i).getY()*scalingFactor)+screenHeight/2;
 		}
 		return y;
 	}
@@ -728,18 +728,23 @@ public class Polygon {
 	 * @param g The graphics object on which the polygon is drawn.
 	 * @param c The color of the polygon.
 	 */
-	public void drawIncomplete(Graphics2D g, Color c) {
+	public void drawIncomplete(Graphics2D g, int screenWidth, int screenHeight, Color c, double scalingFactor) {
 		g.setColor(Color.BLACK);
+		int x1, x2, y1, y2;
 		for(int i=0; i<getNumberVertices()-1; i++) {
-			g.drawLine((int)getVertex(i).getX(), (int)getVertex(i).getY(), (int)getVertex(i+1).getX(), (int)getVertex(i+1).getY());
+			x1 = (int)(getVertex(i).getX()*scalingFactor)+screenWidth/2;
+			x2 = (int)(getVertex(i+1).getX()*scalingFactor)+screenWidth/2;
+			y1 = (int)(getVertex(i).getY()*scalingFactor)+screenHeight/2;
+			y2 = (int)(getVertex(i+1).getY()*scalingFactor)+screenHeight
+					/2;
+			g.drawLine(x1,y1,x2,y2);
 		}
-		g.setColor(c);
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.3F));
-		g.fillPolygon(getXintValues(), getYintValues(), getNumberVertices());
+		draw(g, screenWidth, screenHeight, c, 0.3F, scalingFactor);
 	}
 
-	public void draw(Graphics2D g, Color c) {
-		drawIncomplete(g,c);
-		g.drawLine((int)getVertex(getNumberVertices()-1).getX(),(int)getVertex(getNumberVertices()-1).getY(),(int)getVertex(0).getX(),(int)getVertex(0).getY());
+	public void draw(Graphics2D g, int screenWidth, int screenHeight, Color c, float alpha, double scalingFactor) {
+		g.setColor(c);
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,alpha));
+		g.fillPolygon(getScaledXintValues(scalingFactor, screenWidth), getScaledYintValues(scalingFactor, screenHeight), getNumberVertices());
 	}
 }

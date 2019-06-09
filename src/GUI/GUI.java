@@ -24,6 +24,7 @@ import javax.swing.DefaultListModel;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -35,6 +36,8 @@ import javax.swing.border.MatteBorder;
 import java.awt.Color;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -175,12 +178,18 @@ public class GUI {
 	
 		
 		display.setDrawnPolygon(drawnPol);
+		display.setCandidatePolygons(candidatePols);
+		display.setClippingPolygons(clippingPols);
+		display.setClippedPolygons(clippedPols);
+		display.setListCandidatePolygons(list_candidates);
+		display.setListClippingPolygons(list_clipping);
+		display.setListClippedPolygons(list_clipped);
 		
 		panel_display.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent m) {
 				if(! btnStartDrawing.isEnabled()) {
-					drawnPol.addVertex(new Point2D.Double((double) m.getX(), (double) m.getY()));
+					drawnPol.addVertex(new Point2D.Double(m.getX()-display.getWidth()/2, m.getY()-display.getHeight()/2));
 					display.repaint();
 				}
 			}
@@ -419,6 +428,14 @@ public class GUI {
 		
 		list_clipping.setBorder(null);
 		list_clipping.setSelectedIndex(0);
+		list_clipping.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				display.repaint();
+			}
+			
+		});
 		
 		JScrollPane scrollPane_listCandidate = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_listCandidate = new GridBagConstraints();
@@ -431,6 +448,14 @@ public class GUI {
 		
 		list_candidates.setBorder(null);
 		list_candidates.setSelectedIndex(0);
+		list_candidates.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				display.repaint();
+			}
+			
+		});
 		
 		JScrollPane scrollPane_listClipped = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_listClipped = new GridBagConstraints();
@@ -531,6 +556,14 @@ public class GUI {
 		gbc_btnClipPolygons.gridy = 0;
 		panel_run.add(btnClipPolygons, gbc_btnClipPolygons);
 		txtReport.setLineWrap(true);
+		
+		btnClipPolygons.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				display.repaint();
+			}
+			
+		});
 		
 		txtReport.setEditable(false);
 		txtReport.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Report", TitledBorder.CENTER, TitledBorder.BELOW_TOP, null, new Color(0, 0, 0)));
