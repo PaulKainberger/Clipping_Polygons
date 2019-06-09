@@ -147,7 +147,7 @@ public class ClippingAlgorithm {
 				Point2D.Double prevPoint = resultTmp.getVertex((j + numberVertRes - 1) % numberVertRes);
 				
 				LineIntersection intersectionLine = Polygon.intersectLines(prevPoint, currentPoint, eBegin, eEnd, true);
-				if(intersectionLine.getType() != LineIntersection.IntersectionType.POINT) {
+				if(intersectionLine.getType() == LineIntersection.IntersectionType.SEGMENT) {
 					return null;
 				}
 				Point2D.Double intersection = intersectionLine.getIntersection(); 
@@ -309,4 +309,38 @@ public class ClippingAlgorithm {
 			}
 		}
 	}
+	
+	/**
+	 * Return string representation of Clipping algorithm showing the current
+	 * polygons used.
+	 * 
+	 * @return String representation.
+	 */
+	@Override
+	public String toString() {
+		String rep = "Clipping Polygon: ";
+		if(clippingPolygon != null) {
+			rep += clippingPolygon.toString();
+		} else {
+			rep += "None";
+		}
+		rep += "\nCandidate polygons: ";
+		if(candidatePolygons.isEmpty()) {
+			rep += "None";
+		} else {
+			for(Polygon poly : candidatePolygons) {
+				rep += "\n- " + poly.toString();
+			}
+		}
+		rep += "\nResult polygons: ";
+		if(resultPolygons.isEmpty()) {
+			rep += "None";
+		} else {
+			for(Polygon poly : resultPolygons) {
+				rep += "\n- " + poly.toString();
+			}
+		}
+		return rep;
+	}
+
 }

@@ -400,15 +400,33 @@ public class Polygon {
 			} 
 
 			// segments overlap
-			if(isBetween(point2Start, point2End, point1Start) || isBetween(point2Start, point2End, point1End)) {
-				// TODO: Compute points of start and end of intersection!
-				Point2D.Double lineSegmentStart = null;
-				Point2D.Double lineSegmentEnd = null;
+			Point2D.Double lineSegmentStart = null;
+			Point2D.Double lineSegmentEnd = null;
+			if(isBetween(point2Start, point2End, point1Start)) {
+				lineSegmentStart = point1Start;
+				if(isBetween(point2Start, point2End, point1End)) {
+					lineSegmentEnd = point1End;
+				} else if (isBetween(point1Start, point1End, point2Start)) {
+					lineSegmentEnd = point2Start;
+				} else {
+					lineSegmentEnd = point2End;
+				}
 				return new LineIntersection(lineSegmentStart, lineSegmentEnd);
 			}
-
+			if(isBetween(point2Start, point2End, point1End)) {
+				lineSegmentStart = point1End;
+				if(isBetween(point2Start, point2End, point1Start)) {
+					lineSegmentEnd = point1Start;
+				} else if (isBetween(point1Start, point1End, point2Start)) {
+					lineSegmentEnd = point2Start;
+				} else {
+					lineSegmentEnd = point2End;
+				}
+				return new LineIntersection(lineSegmentStart, lineSegmentEnd);
+			}
+			
 			// segments do not overlap
-			return new LineIntersection(false);
+			return new LineIntersection(true);
 		}
 	}
 
@@ -553,7 +571,7 @@ public class Polygon {
 						                                getVertex(j), getVertex((j+1) % numVertices));
 				// there is an intersection point and the two edges are
 				// not adjacent (otherwise there intersection point is just the vertex)
-				if(point.getType() != LineIntersection.IntersectionType.POINT && i + 1 != j && Math.floorMod(i - 1, numVertices) != j ) {
+				if(point.getType() == LineIntersection.IntersectionType.POINT && i + 1 != j && Math.floorMod(i - 1, numVertices) != j ) {
 					return true;
 				}
 			}

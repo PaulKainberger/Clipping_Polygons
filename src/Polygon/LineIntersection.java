@@ -302,5 +302,27 @@ public class LineIntersection {
 		return true;
 	}
 	
-	
+	/**
+	 * Returns a string representation of the intersection.
+	 * 
+	 * @return String representation.
+	 */
+	@Override
+	public String toString() {
+		String rep;
+		if(isParallel()) {
+			rep = "Lines parallel.";
+		} else {
+			rep = "Lines not parallel.";
+		}
+		if(getType() == IntersectionType.NO) {
+			rep += "No intersection.";
+		} else if(getType() == IntersectionType.POINT) {
+			rep += "Intersection in point " + getIntersection().toString() + ".";
+		} else {
+			rep += "Intersection is line segment from " + getLineSegmentStart().toString()
+					+ " to " + getLineSegmentEnd().toString() + ".";
+		}
+		return rep;
+	}
 }
