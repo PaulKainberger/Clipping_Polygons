@@ -146,12 +146,11 @@ public class ClippingAlgorithm {
 				Point2D.Double currentPoint = resultTmp.getVertex(j);
 				Point2D.Double prevPoint = resultTmp.getVertex((j + numberVertRes - 1) % numberVertRes);
 				
-				Point2D.Double intersection;
-				try {
-					intersection = Polygon.intersectLines(prevPoint, currentPoint, eBegin, eEnd, true);
-				} catch(IntersectionException e) {
+				LineIntersection intersectionLine = Polygon.intersectLines(prevPoint, currentPoint, eBegin, eEnd, true);
+				if(intersectionLine.getType() != LineIntersection.IntersectionType.POINT) {
 					return null;
 				}
+				Point2D.Double intersection = intersectionLine.getIntersection(); 
 				if(Polygon.inside(currentPoint, eBegin, eEnd)) {
 					if(!Polygon.inside(prevPoint, eBegin, eEnd)) {
 						result.addVertex(intersection);
@@ -196,12 +195,8 @@ public class ClippingAlgorithm {
 		}*/
 		
 		Set<Point2D.Double> intersectionPointsSet = null;
-		try {
-			intersectionPointsSet = candidate.intersect(clippingPolygon);
-		} catch (IntersectionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		intersectionPointsSet = candidate.intersect(clippingPolygon);
+
 		List<Point2D.Double> intersectionPoints = new ArrayList<Point2D.Double>(intersectionPointsSet);
 		
 		Polygon candidateWithIntersections = new Polygon(candidate);
