@@ -172,6 +172,7 @@ public class GUI {
 		gbc_display.gridx = 0;
 		gbc_display.gridy = 0;
 		panel_display.add(display, gbc_display);
+	
 		
 		display.setDrawnPolygon(drawnPol);
 		
@@ -310,6 +311,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				drawnPol = new Polygon();
 				display.setDrawnPolygon(drawnPol);
+				display.repaint();
 				btnStartDrawing.setEnabled(true);
 				btnFinishDrawing.setEnabled(false);
 				btnCancelDrawing.setEnabled(false);
@@ -338,6 +340,7 @@ public class GUI {
 				}
 				drawnPol = new Polygon();
 				display.setDrawnPolygon(drawnPol);
+				display.repaint();
 				btnStartDrawing.setEnabled(true);
 				btnCancelDrawing.setEnabled(false);
 				btnFinishDrawing.setEnabled(false);
