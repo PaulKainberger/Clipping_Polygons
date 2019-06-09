@@ -711,12 +711,13 @@ public class Polygon {
 	 * @param c The color of the polygon.
 	 */
 	public void drawIncomplete(Graphics2D g, Color c) {
-		g.setColor(c);
+		g.setColor(Color.BLACK);
 		for(int i=0; i<getNumberVertices()-1; i++) {
 			g.drawLine((int)getVertex(i).getX(), (int)getVertex(i).getY(), (int)getVertex(i+1).getX(), (int)getVertex(i+1).getY());
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.2F));
-			g.fillPolygon(getXintValues(), getYintValues(), getNumberVertices());
 		}
+		g.setColor(c);
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.3F));
+		g.fillPolygon(getXintValues(), getYintValues(), getNumberVertices());
 	}
 
 	public void draw(Graphics2D g, Color c) {
