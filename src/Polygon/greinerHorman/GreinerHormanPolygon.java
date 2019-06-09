@@ -14,7 +14,7 @@ import Polygon.Polygon;
  *
  */
 public class GreinerHormanPolygon extends Polygon {
-
+	
 	/**
 	 * Constructor using a Linked List for the vertices.
 	 */

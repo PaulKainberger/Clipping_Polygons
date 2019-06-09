@@ -10,7 +10,7 @@ import java.util.ListIterator;
  *
  */
 
-class GreinerHormanVertex extends Double {
+public class GreinerHormanVertex extends Double {
 	
 	/**
 	 * Default serial version ID.
@@ -86,5 +86,13 @@ class GreinerHormanVertex extends Double {
 	 */
 	public double getAlpha() {
 		return alpha;
+	}
+
+	/**
+	 * Sets the boolean whether the vertex is an entry or an exit to the other polynomial.
+	 * @param entryExit true if the vertex is an entry vertex.
+	 */
+	public void setEntryExit(boolean entryExit) {
+		this.entryExit = entryExit;
 	}
 }
