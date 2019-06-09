@@ -180,7 +180,7 @@ public class GUI {
 			@Override
 			public void mouseClicked(MouseEvent m) {
 				if(! btnStartDrawing.isEnabled()) {
-					drawnPol.addVertex(new Point2D.Double((double) m.getX(), (double) m.getY()));
+					drawnPol.addVertex(new Point2D.Double(m.getX()-display.getWidth()/2, m.getY()-display.getHeight()/2));
 					display.repaint();
 				}
 			}

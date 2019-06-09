@@ -55,16 +55,15 @@ public class PolygonGraphic extends JPanel {
 
 		
 	public void paintComponent(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
 		super.paintComponent(g);
 		this.setBackground(Color.white);
-		if (draw)
-			test((Graphics2D)g);
+		g.setColor(Color.BLACK);
+		g.drawLine(0,this.getHeight()/2,this.getWidth(),this.getHeight()/2);
+		g2d.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON));
+		drawnPolygon.drawIncomplete(g2d, this.getWidth(), this.getHeight(), Color.ORANGE,1);
 	}
-	
-	private void test(Graphics2D g) {
-		((Graphics2D)g).setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON));
-		drawnPolygon.drawIncomplete(g, Color.ORANGE);
-	}
+
 	
 	
 }
