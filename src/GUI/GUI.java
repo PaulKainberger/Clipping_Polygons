@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 
@@ -26,10 +25,8 @@ import javax.swing.DefaultListModel;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import javax.swing.JList;
-import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import java.awt.Font;
@@ -45,7 +42,7 @@ import javax.swing.JLabel;
 
 /**
  * @author Paul
- *
+ * @version 1.01 June 10th 2019
  */
 public class GUI {
 
@@ -552,17 +549,18 @@ public class GUI {
 		gbc_btnClipPolygons.gridx = 1;
 		gbc_btnClipPolygons.gridy = 0;
 		panel_run.add(btnClipPolygons, gbc_btnClipPolygons);
+		txtReport.setWrapStyleWord(true);
 		txtReport.setLineWrap(true);
 		
 		btnClipPolygons.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(list_clipping.isSelectionEmpty()) {
-					printReport("ClippingEmpty", false, true);
+					printReport("", 0, -1, -1, false, true);
 					return;
 				}
 				if(list_candidates.isSelectionEmpty()) {
-					printReport("CandidatesEmpty", false, true);
+					printReport("", -1, 0, -1, false, true);
 					return;
 				}
 				
@@ -589,6 +587,7 @@ public class GUI {
 				// Run algorithm
 				boolean error = true;
 				clippedPols.clear();
+				model_clipped.removeAllElements();
 				ClippingAlgorithm clippingAlgorithm = new ClippingAlgorithm();
 				clippingAlgorithm.setClippingPolygon(clippingPol);
 				clippingAlgorithm.addCandidatePolygon(candidatePolsSelected);
@@ -620,7 +619,7 @@ public class GUI {
 					model_clipped.addElement("Clipped P. " + (i + 1));
 				}
 				
-				printReport(algorithm, automaticChosen, error);
+				printReport(algorithm, 1, candidatePolsSelected.size(), clippedPols.size(), automaticChosen, error);
 				display.repaint();
 			}
 			
@@ -662,14 +661,14 @@ public class GUI {
 		return i;
 	}
 	
-	private void printReport(String algorithm, boolean automaticChosen, boolean error) {
+	private void printReport(String algorithm, int numberSelectedClipping, int numberSelectedCandidate, int numberClipped, boolean automaticChosen, boolean error) {
 		String s = new String();
 		if(error) {
 			s = "Error.\n\n";
-			if(algorithm.equals("ClippingEmpty")) {
+			if(numberSelectedClipping != 1) {
 				s += "Please select a clipping polygon from the list above which should be used.";
 			}
-			else if(algorithm.equals("CandidatesEmpty")) {
+			else if(numberSelectedCandidate < 1) {
 				s += "Please select candidate polygons from the list above which should be used.";
 			}
 			else if(automaticChosen) {
@@ -684,8 +683,17 @@ public class GUI {
 		}
 		else {
 			s = "Success.\n\n";
-			s += "Algorithm '" + algorithm + "' was used.\n";
-			s += "The resulting polygons can be looked up above.";
+			s += "Algorithm '" + algorithm + "' was used.\n\n";
+			s += numberSelectedCandidate + " candidate polygon";
+			if(numberSelectedCandidate > 1)
+				s += "s were ";
+			else
+				s += " was ";
+			s += "clipped against " + numberSelectedClipping + " clipping polygon.\n";
+			s += "The result is " + numberClipped + " clipped polygon";
+			if(numberClipped != 1)
+				s += "s";
+			s += ".";
 		}
 		txtReport.setText(s);
 	}
