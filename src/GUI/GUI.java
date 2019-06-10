@@ -7,6 +7,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
@@ -39,6 +41,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
 
 /**
  * @author Paul
@@ -48,17 +51,17 @@ public class GUI {
 
 	private JFrame frmClippingPolygons;
 	
-	private Vector<Polygon> clippingPols = new Vector<Polygon>();
-	private Vector<Polygon> candidatePols = new Vector<Polygon>();
-	private Vector<Polygon> clippedPols = new Vector<Polygon>();
+	private ArrayList<Polygon> clippingPols = new ArrayList<Polygon>();
+	private ArrayList<Polygon> candidatePols = new ArrayList<Polygon>();
+	private ArrayList<Polygon> clippedPols = new ArrayList<Polygon>();
 	private Polygon drawnPol = new Polygon();
 	
 	private PolygonGraphic display = new PolygonGraphic();
 	
-	private JTextField txtDrawAPolygon;
-	private JTextField txtClippingPolygons;
-	private JTextField txtCandidatePolygons;
-	private JTextField txtClippedPolygons;
+	private JLabel txtDrawAPolygon;
+	private JLabel txtClippingPolygons;
+	private JLabel txtCandidatePolygons;
+	private JLabel txtClippedPolygons;
 	
 	private JTextArea txtReport = new JTextArea();
 	
@@ -251,10 +254,9 @@ public class GUI {
 		gbl_panel_draw.rowWeights = new double[]{0.0, 0.0, 0.0};
 		panel_draw.setLayout(gbl_panel_draw);
 		
-		txtDrawAPolygon = new JTextField();
+		txtDrawAPolygon = new JLabel();
 		txtDrawAPolygon.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtDrawAPolygon.setBorder(null);
-		txtDrawAPolygon.setEditable(false);
 		txtDrawAPolygon.setText("Draw a polygon");
 		GridBagConstraints gbc_txtDrawAPolygon = new GridBagConstraints();
 		gbc_txtDrawAPolygon.fill = GridBagConstraints.HORIZONTAL;
@@ -262,7 +264,6 @@ public class GUI {
 		gbc_txtDrawAPolygon.gridx = 0;
 		gbc_txtDrawAPolygon.gridy = 0;
 		panel_draw.add(txtDrawAPolygon, gbc_txtDrawAPolygon);
-		txtDrawAPolygon.setColumns(10);
 		
 		rdbtnClippingPolygon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -374,8 +375,7 @@ public class GUI {
 		gbl_panel_manage.rowWeights = new double[]{1.0, 1.0, 0.0};
 		panel_manage.setLayout(gbl_panel_manage);
 		
-		txtClippingPolygons = new JTextField();
-		txtClippingPolygons.setEditable(false);
+		txtClippingPolygons = new JLabel();
 		txtClippingPolygons.setHorizontalAlignment(SwingConstants.CENTER);
 		txtClippingPolygons.setBorder(null);
 		txtClippingPolygons.setText("Clipping polygons");
@@ -386,10 +386,8 @@ public class GUI {
 		gbc_txtClippingPolygons.gridx = 0;
 		gbc_txtClippingPolygons.gridy = 0;
 		panel_manage.add(txtClippingPolygons, gbc_txtClippingPolygons);
-		txtClippingPolygons.setColumns(10);
 		
-		txtCandidatePolygons = new JTextField();
-		txtCandidatePolygons.setEditable(false);
+		txtCandidatePolygons = new JLabel();
 		txtCandidatePolygons.setHorizontalAlignment(SwingConstants.CENTER);
 		txtCandidatePolygons.setBorder(null);
 		txtCandidatePolygons.setText("Candidate polygons");
@@ -400,10 +398,8 @@ public class GUI {
 		gbc_txtCandidatePolygons.gridx = 1;
 		gbc_txtCandidatePolygons.gridy = 0;
 		panel_manage.add(txtCandidatePolygons, gbc_txtCandidatePolygons);
-		txtCandidatePolygons.setColumns(10);
 		
-		txtClippedPolygons = new JTextField();
-		txtClippedPolygons.setEditable(false);
+		txtClippedPolygons = new JLabel();
 		txtClippedPolygons.setHorizontalAlignment(SwingConstants.CENTER);
 		txtClippedPolygons.setBorder(null);
 		txtClippedPolygons.setText("Clipped polygons");
@@ -414,7 +410,6 @@ public class GUI {
 		gbc_txtClippedPolygons.gridx = 2;
 		gbc_txtClippedPolygons.gridy = 0;
 		panel_manage.add(txtClippedPolygons, gbc_txtClippedPolygons);
-		txtClippedPolygons.setColumns(10);
 		
 		JScrollPane scrollPane_listClipping = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_listClipping = new GridBagConstraints();
@@ -468,6 +463,14 @@ public class GUI {
 		
 		list_clipped.setBorder(null);
 		list_clipped.setSelectedIndex(0);
+		list_clipped.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				display.repaint();
+			}
+			
+		});
 		
 		JButton btnDelete_clipping = new JButton("Delete selected");
 		btnDelete_clipping.addActionListener(new ActionListener() {
@@ -495,12 +498,6 @@ public class GUI {
 					model_candidates.remove(selectedIndex);
 					candidatePols.remove(selectedIndex);
 				}
-				/*String s = "";
-				for(int i = 0; i < candidatePols.size(); i++) {
-					s += candidatePols.elementAt(i);
-					s += "\n";
-				}
-				txtReport.setText(s);*/
 			}
 		});
 		GridBagConstraints gbc_btnDelete_candidate = new GridBagConstraints();
@@ -560,6 +557,70 @@ public class GUI {
 		btnClipPolygons.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(list_clipping.isSelectionEmpty()) {
+					printReport("ClippingEmpty", false, true);
+					return;
+				}
+				if(list_candidates.isSelectionEmpty()) {
+					printReport("CandidatesEmpty", false, true);
+					return;
+				}
+				
+				String algorithm = comboBox_algorithms.getSelectedItem().toString();
+				boolean automaticChosen = algorithm.equals("Automatic");
+				Polygon clippingPol = clippingPols.get(list_clipping.getSelectedIndex());
+				Set<Polygon> candidatePolsSelected = new HashSet<Polygon>();
+				for(int i = 0; i < candidatePols.size(); i++) {
+					if(list_candidates.isSelectedIndex(i)) {
+						candidatePolsSelected.add(candidatePols.get(i));
+					}
+				}
+				
+				if(automaticChosen) {
+					algorithm = "Sutherland-Hodgman";
+					if(! clippingPol.isConvex()) {
+						algorithm = "Weiler-Atherton";
+					}
+					if(clippingPol.isSelfIntersecting()) {
+						algorithm = "Greiner-Hormann";
+					}
+				}
+				
+				// Run algorithm
+				boolean error = true;
+				clippedPols.clear();
+				ClippingAlgorithm clippingAlgorithm = new ClippingAlgorithm();
+				clippingAlgorithm.setClippingPolygon(clippingPol);
+				clippingAlgorithm.addCandidatePolygon(candidatePolsSelected);
+				if(algorithm.equals("Sutherland-Hodgman")) {
+					if(clippingAlgorithm.SutherlandHodgman()) {
+						for(Polygon p : clippingAlgorithm.getResult()) {
+							clippedPols.add(p);
+						}
+						error = false;
+					}
+				}
+				else if(algorithm.equals("Weiler-Atherton")) {
+					if(clippingAlgorithm.WeilerAtherton()) {
+						for(Polygon p : clippingAlgorithm.getResult()) {
+							clippedPols.add(p);
+						}
+						error = false;
+					}
+				}
+				else if(algorithm.equals("Greiner-Hormann")) {
+					if(clippingAlgorithm.GreinerHorman()) {
+						for(Polygon p : clippingAlgorithm.getResult()) {
+							clippedPols.add(p);
+						}
+						error = false;
+					}
+				}
+				for(int i = 0; i < clippedPols.size(); i++) {
+					model_clipped.addElement("Clipped P. " + (i + 1));
+				}
+				
+				printReport(algorithm, automaticChosen, error);
 				display.repaint();
 			}
 			
@@ -574,7 +635,7 @@ public class GUI {
 		gbc_txtReport.gridx = 0;
 		gbc_txtReport.gridy = 1;
 		panel_run.add(txtReport, gbc_txtReport);
-		txtReport.setText("Success.\r\n\r\nAlgorithm Greiner-Hormann was used.");
+		txtReport.setText("No report yet.\n\nClip polygons to get a report.");
 		
 	/**
 	* Menu bar.
@@ -601,4 +662,31 @@ public class GUI {
 		return i;
 	}
 	
+	private void printReport(String algorithm, boolean automaticChosen, boolean error) {
+		String s = new String();
+		if(error) {
+			s = "Error.\n\n";
+			if(algorithm.equals("ClippingEmpty")) {
+				s += "Please select a clipping polygon from the list above which should be used.";
+			}
+			else if(algorithm.equals("CandidatesEmpty")) {
+				s += "Please select candidate polygons from the list above which should be used.";
+			}
+			else if(automaticChosen) {
+				s += "None of the provided algorithms are applicable to the chosen polygons.";
+				s += "Please open the 'Help' window from the menu to learn which polygons are suitable.";
+			}
+			else {
+				s += "The algorithm '" + algorithm + "' ist not applicable to the chosen polygons.";
+				s += "Please open the 'Help' window from the menu to learn which polygons are suitable or ";
+				s += "select the algorithm 'Automatic' to let the program decide on a suitable algorithm.";
+			}
+		}
+		else {
+			s = "Success.\n\n";
+			s += "Algorithm '" + algorithm + "' was used.\n";
+			s += "The resulting polygons can be looked up above.";
+		}
+		txtReport.setText(s);
+	}
 }
