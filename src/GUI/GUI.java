@@ -26,6 +26,7 @@ import javax.swing.DefaultListModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+
 import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -39,6 +40,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import java.awt.event.KeyEvent;
 
 /**
  * @author Paul
@@ -124,7 +130,7 @@ public class GUI {
 		frmClippingPolygons = new JFrame();
 		frmClippingPolygons.setTitle("Clipping polygons");
 		frmClippingPolygons.setName("frame");
-		frmClippingPolygons.setBounds(100, 100, 1060, 630);
+		frmClippingPolygons.setBounds(100, 100, 1123, 698);
 		frmClippingPolygons.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {600, 360};
@@ -642,6 +648,42 @@ public class GUI {
 		
 		JMenuBar menuBar = new JMenuBar();
 		frmClippingPolygons.setJMenuBar(menuBar);
+		
+		JMenu mnPolygon = new JMenu("Polygons");
+		menuBar.add(mnPolygon);
+		
+		JMenu mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
+		
+		JMenuItem mntmHelp = new JMenuItem("Help");
+		mntmHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				HelpPane helpPane = new HelpPane();
+				helpPane.setVisible(true);
+			}
+		});
+		mntmHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+		mnHelp.add(mntmHelp);
+		
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String aboutString = "<html>";
+				aboutString += "<h1>Clipping polygons</h1>";
+				aboutString += "<p>This program was developed in the course Software Technology";
+				aboutString += " at JKU Linz by";
+				aboutString += "<ul><li>Paul Kainberger</li><li>Jakob Moosbauer</li>";
+				aboutString += "<li>Philipp Nuspl</li></ul>";
+				aboutString += "in spring 2019.</p>";
+				aboutString += "<p>Version 1.0, 26.7.2019</p>";
+				aboutString += "</html>";
+				JOptionPane.showMessageDialog(frmClippingPolygons,
+						aboutString,
+					    "About",
+					    JOptionPane.PLAIN_MESSAGE);
+			}
+		});
+		mnHelp.add(mntmAbout);
 		
 	}
 	
