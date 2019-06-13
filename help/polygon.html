@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>CSS Website Layout</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 5px;
+}
+
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #000987;
+  padding-left: 5px;
+}
+
+/* Style the topnav links */
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  text-decoration: none;
+  padding-right: 15px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Clipping Polygons &ndash; Help</h1>
+</div>
+
+<div class="topnav">
+  <a href="index.html">Tutorial</a>&nbsp;&nbsp;
+  <a href="polygon.html">Polygon</a>&nbsp;&nbsp;
+  <a href="algorithms.html">Algorithms</a>&nbsp;&nbsp;
+  <a href="file.html">File</a>
+</div>
+
+  <div class="content">
+    <h2>Polygons</h2>
+    <p>A polygon is an ordered list of points, called <i>vertices</i>, which are connected with
+    a line, called <i>edge</i>. Here we describe some key concepts for polygons.</p>
+
+    <h3>Convex</h3>
+    <p>We call a polygon convex if all the inner angles are strictly less than 180 degrees.
+    Equivalently this is the case if every line segment of points inside or on the border
+    of the polygon is still inside or on the border of the polygon. We consider polygons
+    with less than three vertices not convex.</p>
+
+    <h3>Self-intersecting</h3>
+    <p>A polygon is called self-intersecting if two arbitrary edges do not intersect. I.e. the
+    only intersections of edges are the vertices themselves where they are connected and no
+    other points. For self-intersecting polygons the definition of the interior is more diffcult
+    than for non self-intersecting polygons. There are several different rules which can determine
+    if a point lies inside of the polygon. We use the <i>even-odd (winding number) rule</i>.</p>
+
+    <h3>Interior</h3>
+    <p>For determining if a point is inside a polgon we use the even-odd (winding number) rule. The
+    SVG file format defines this rule as follows:</p>
+    <p>&ldquo;This rule determines the "insideness" of a point on the canvas by drawing a ray from
+      that point to infinity in any direction and counting the number of path segments from the given
+      shape that the ray crosses. If this number is odd, the point is inside; if even, the point is outside.&rdquo;</p>
+
+
+  </div>
+
+</body>
+</html>

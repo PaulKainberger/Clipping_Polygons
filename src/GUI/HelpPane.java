@@ -10,18 +10,38 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLEditorKit;
 
+/**
+ * Help pane for program. Displays the help website in an editor pane.
+ * @author Philipp
+ * @version 0.1
+ *
+ */
 public class HelpPane extends JFrame {
+	/**
+	 * Serial version id.
+	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * Main editor pane where website is displayed.
+	 */
 	JEditorPane editorPane;
 
+	/**
+	 * Creates the help pane and tries to load the help-website.
+	 * Shows an error if it cannot be loaded.
+	 */
 	public HelpPane() {
 		super("Clipping Polygons - Help");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setSize(900, 700);
 
 		editorPane = new JEditorPane();
-		editorPane.setEditable(false); // Read-only
+		editorPane.setEditable(false); 
+		HTMLEditorKit kit = new HTMLEditorKit();
+		editorPane.setEditorKit(kit);
+
 		getContentPane().add(new JScrollPane(editorPane), "Center");
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
@@ -46,6 +66,9 @@ public class HelpPane extends JFrame {
 
 	}
 	
+	/**
+	 * Displays an error that the help file could not be opened.
+	 */
 	private void showFileOpenError() {
 		JOptionPane.showMessageDialog(editorPane, 
 				"Unable to open help file.", "File Open Error",

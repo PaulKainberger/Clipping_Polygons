@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>CSS Website Layout</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 5px;
+}
+
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #000987;
+  padding-left: 5px;
+}
+
+/* Style the topnav links */
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  text-decoration: none;
+  padding-right: 15px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Clipping Polygons &ndash; Help</h1>
+</div>
+
+<div class="topnav">
+  <a href="index.html">Tutorial</a>&nbsp;&nbsp;
+  <a href="polygon.html">Polygon</a>&nbsp;&nbsp;
+  <a href="algorithms.html">Algorithms</a>&nbsp;&nbsp;
+  <a href="file.html">File</a>
+</div>
+
+  <div class="content">
+    <h2>File</h2>
+    <p>Here we describe the file format used by this program to save and open polygons.</p>
+
+    <h3>Specification</h3>
+    <p>The program provides a possibility to save polygons in files. Such a file will have the following structure:
+      <ol><li>Each line stands for a point in a polygon.</li>
+          <li>The x and y-coordinate are separated by commas.</li>
+          <li>Distinct polygons are separated by blank lines.</li></ol>
+      </p>
+
+    <h3>Example</h3>
+    <p>Example for a file with a triangle and a quadrangle:<br><br>
+    <div style="border: 1px solid;">1.5,2.12<br>
+    -7.4,5.3<br>
+    5,-1<br>
+    <br>
+    4,2.3<br>
+    0,-5.76248359<br>
+    12,-5<br>
+    1,1</div></p>
+  </div>
+
+</body>
+</html>

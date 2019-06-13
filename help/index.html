@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>CSS Website Layout</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 5px;
+}
+
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #000987;
+  padding-left: 5px;
+}
+
+/* Style the topnav links */
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  text-decoration: none;
+  padding-right: 15px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Clipping Polygons &ndash; Help</h1>
+</div>
+
+<div class="topnav">
+  <a href="index.html">Tutorial</a>&nbsp;&nbsp;
+  <a href="polygon.html">Polygon</a>&nbsp;&nbsp;
+  <a href="algorithms.html">Algorithms</a>&nbsp;&nbsp;
+  <a href="file.html">File</a>
+</div>
+
+  <div class="content">
+    <h2>Tutorial</h2>
+    <p>This is the help page of the Clipping Polygons program. On this page we give a short tutorial on how to use the program.
+    You can also take a look at a short description of the clipping algorithms and some help page for polygons.</p>
+    <p>A clipping algorithm cuts a <i>candidate polygon</i> such that it is contained in a <i>clipping polygon</i>, i.e.
+    the intersection of two such polygons is computed.</p>
+
+    <h3>Window</h3>
+    <p>The window consists of two parts: <ol>
+      <li>On the left-hand-side you can see a coordinate system and in there all polygons
+    added to the program will be displayed. The clipping polygons are display in blue, candidate polygons in red,
+    clipped polygons in green and polygons which are currently created in yellow. Polygons which are
+    currently selected in one the lists are highlighted.</li>
+      <li>On the right-hand-side you can find all settings.
+        <ol><li>In the top part you can choose to add a new polygon, either a
+      clipping polygon or a candidate polygon (which will be clipped against the clipping polygon).</li>
+      <li>In the central part you can find a list with all clipping, candidate and clipped polygons.
+      If you select polygons in one of the three lists (you can select several using the Ctrl- or Shift-key) you can delete these selected polygons.
+      This procedure, however, cannot be undone.  </li>
+      <li>Finally in the bottom you can choose one of three <a href="algorithms.html">algorithms</a> which will be used for clipping the polygons.
+      If you use <i>automatic</i>, then an algorithm which can handle the given polygons is chosen automatically.
+      The clipping is started using the <i>Clip polygons</i> button. Then the chosen
+      clipping polygon is used (one has to be selected) and all selected candidate polygons are clipped
+      against the chosen clipping polygon. Then the result will be displayed in the report-textbox.</li>
+      </ol></li></ol></p>
+      <h3>Menu</h3>
+      <p>In the menu you can get this help-page, a short about window and you can modify the list of polygons:
+        <ol><li>Move: You can move the polygons which are currently selected into a specific list. For instance
+        you can move a currently selected resulting polygon to the list of clipping polygons and use
+        it as clipping polygon. This is particulary useful after opening polygons.</li>
+        <li>Save: You can save all currently selected polygons for future use into a file.</li>
+        <li>Open: You can open polygons from a file, e.g. polygons which you previously saved with this program.
+          The file format is described in <a href="algorithms.html">File</a>.</li>
+        </ol>
+      </p>
+  </div>
+
+</body>
+</html>

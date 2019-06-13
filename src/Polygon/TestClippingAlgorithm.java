@@ -8,6 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Junit tests for Polygon clipping class.
+ * @author Philipp
+ * @version 0.1
+ *
+ */
 public class TestClippingAlgorithm {
 	private Polygon triangle;
 	private Polygon triangleInv;

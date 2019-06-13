@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>CSS Website Layout</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 5px;
+}
+
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #000987;
+  padding-left: 5px;
+}
+
+/* Style the topnav links */
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  text-decoration: none;
+  padding-right: 15px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Clipping Polygons &ndash; Help</h1>
+</div>
+
+<div class="topnav">
+  <a href="index.html">Tutorial</a>&nbsp;&nbsp;
+  <a href="polygon.html">Polygon</a>&nbsp;&nbsp;
+  <a href="algorithms.html">Algorithms</a>&nbsp;&nbsp;
+  <a href="file.html">File</a>
+</div>
+
+  <div class="content">
+    <h2>Algorithms</h2>
+    <p>Our algorithms can clip polygons of increasing complexity. The Sutherland-Hodgman can only be used if the clipping polygon
+    is <a href="polygon.html">convex</a>. The Weiler-Atherton algorithm can also handle clipping polygons which are not convex. However the clipping polygon
+    in this case has to be not <a href="polygon.html">self-intersecting</a>. The most general algorthm is the Greiner-Hormann algorithm.
+    It can clip also self-intersecting polygons.</p>
+
+    <h3>Sutherland-Hodgman</h3>
+    <p>This algorithm can only handle clipping polygons which are convex. Furthermore if the candidate polygon is not convex it can happen
+    that double edges are introduced, i.e. that several &ldquo;parts&rdquo; of a polyon are only connected by a double edge which was
+    not orginally part of the polygon. The Weiler-Atherton algorithm however avoids this and the polygon will be split into seperate
+    polygons.</p>
+
+    <p>The algorithm works in the following way: We traverse the convex clipping polygon edge by edge in anti-clockwise order. We extend every
+      edge to a line and compute the intersection points with the candidate polygon which we add to the candidate polygon at the appropriate position.
+      Then we only take the vertices of the candidate polygon which lie on the left side of the line (defined by the edge of the clipping polygon).
+      This includes all the vertices which are inside the clipping polygon and after going around the entire clipping polygon it will only contain these plus the added vertices on the edge.</p>
+
+    <h3>Weiler-Atherton</h3>
+    <p>TBA</p>
+
+    <h3>Greiner-Hormann</h3>
+    <p>TBA</p>
+  </div>
+
+</body>
+</html>
