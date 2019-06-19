@@ -62,25 +62,21 @@ public class PolygonGraphic extends JPanel {
 		this.setBackground(Color.white);
 		g2d.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON));
 		
-		g.setColor(Color.BLACK);
-		g.drawLine(0,this.getHeight()/2,this.getWidth(),this.getHeight()/2);
-		g.drawLine(this.getWidth()/2,0,this.getWidth()/2,this.getHeight());
-		
 		drawnPolygon.drawIncomplete(g2d, this.getWidth(), this.getHeight(), Color.YELLOW,1);
 		
 		for(int i = 0; i < candidatePolygons.size(); i++) {
 			candidatePolygons.get(i).draw(g2d, this.getWidth(), this.getHeight(), Color.RED, 
-					Arrays.binarySearch(listCandidatePolygons.getSelectedIndices(),i) >= 0 ? 0.5F : 0.2F, 1);
+					Arrays.binarySearch(listCandidatePolygons.getSelectedIndices(),i) >= 0 ? 0.5F : 0.1F, 1);
 		}
 		
 		for(int i = 0; i < clippingPolygons.size(); i++) {
 			clippingPolygons.get(i).draw(g2d, this.getWidth(), this.getHeight(), Color.BLUE, 
-					Arrays.binarySearch(listClippingPolygons.getSelectedIndices(),i) >= 0 ? 0.5F : 0.2F, 1);
+					Arrays.binarySearch(listClippingPolygons.getSelectedIndices(),i) >= 0 ? 0.5F : 0.1F, 1);
 		}
 		
 		for(int i = 0; i < clippedPolygons.size(); i++) {
 			clippedPolygons.get(i).draw(g2d, this.getWidth(), this.getHeight(), Color.GREEN, 
-					Arrays.binarySearch(listClippedPolygons.getSelectedIndices(),i) >= 0 ? 0.5F : 0.2F, 1);
+					Arrays.binarySearch(listClippedPolygons.getSelectedIndices(),i) >= 0 ? 0.5F : 0.1F, 1);
 		}
 	}
 

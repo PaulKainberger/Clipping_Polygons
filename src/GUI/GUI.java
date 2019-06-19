@@ -49,7 +49,7 @@ import java.awt.event.InputEvent;
 
 /**
  * @author Paul
- * @version 1.01 June 10th 2019
+ * @version 1.00 June 19th 2019
  */
 public class GUI {
 
@@ -72,17 +72,19 @@ public class GUI {
 	private JButton btnCancelDrawing = new JButton("Cancel drawing");
 	private JButton btnFinishDrawing = new JButton("Finish drawing");
 	private JButton btnStartDrawing = new JButton("Start drawing");
+	private JButton btnDelete_clipping = new JButton("Delete selected");
+	private JButton btnDelete_candidate = new JButton("Delete selected");
 	private JButton btnDelete_clipped = new JButton("Delete selected");
 
 	private JRadioButton rdbtnClippingPolygon = new JRadioButton("Clipping polygon");
 	private JRadioButton rdbtnCandidatePolygon = new JRadioButton("Candidate polygon");
 	
 	private JList<String> list_clipping = new JList<String>();
-	private JList<String> list_candidates = new JList<String>();
+	private JList<String> list_candidate = new JList<String>();
 	private JList<String> list_clipped = new JList<String>();
 	
 	private ArrayList<Integer> indicesClipping = new ArrayList<Integer>();
-	private ArrayList<Integer> indicesCandidates = new ArrayList<Integer>();
+	private ArrayList<Integer> indicesCandidate = new ArrayList<Integer>();
 	
 	/**
 	 * Launch the application.
@@ -115,13 +117,13 @@ public class GUI {
 		// set model for JLists, such that deleting elements is possible.
 		list_clipping.setModel(new DefaultListModel<String>());
 		DefaultListModel<String> model_clipping = (DefaultListModel<String>) list_clipping.getModel();
-		list_candidates.setModel(new DefaultListModel<String>());
-		DefaultListModel<String> model_candidates = (DefaultListModel<String>) list_candidates.getModel();
+		list_candidate.setModel(new DefaultListModel<String>());
+		DefaultListModel<String> model_candidate = (DefaultListModel<String>) list_candidate.getModel();
 		list_clipped.setModel(new DefaultListModel<String>());
 		DefaultListModel<String> model_clipped = (DefaultListModel<String>) list_clipped.getModel();
 		
 		list_clipping.setFixedCellWidth(50);
-		list_candidates.setFixedCellWidth(50);
+		list_candidate.setFixedCellWidth(50);
 		list_clipped.setFixedCellWidth(50);
 		
 	/**
@@ -188,7 +190,7 @@ public class GUI {
 		display.setCandidatePolygons(candidatePols);
 		display.setClippingPolygons(clippingPols);
 		display.setClippedPolygons(clippedPols);
-		display.setListCandidatePolygons(list_candidates);
+		display.setListCandidatePolygons(list_candidate);
 		display.setListClippingPolygons(list_clipping);
 		display.setListClippedPolygons(list_clipped);
 		
@@ -347,9 +349,9 @@ public class GUI {
 					clippingPols.add(i, drawnPol);
 				}
 				if(rdbtnCandidatePolygon.isSelected()) {
-					int i = getFreeIndex(indicesCandidates);
-					indicesCandidates.add(i, i);
-					model_candidates.add(i, "Candidate P. " + (i + 1));
+					int i = getFreeIndex(indicesCandidate);
+					indicesCandidate.add(i, i);
+					model_candidate.add(i, "Candidate P. " + (i + 1));
 					candidatePols.add(i, drawnPol);
 				}
 				drawnPol = new Polygon();
@@ -428,12 +430,10 @@ public class GUI {
 		list_clipping.setBorder(null);
 		list_clipping.setSelectedIndex(0);
 		list_clipping.addListSelectionListener(new ListSelectionListener() {
-
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				display.repaint();
 			}
-			
 		});
 		
 		JScrollPane scrollPane_listCandidate = new JScrollPane();
@@ -443,17 +443,15 @@ public class GUI {
 		gbc_scrollPane_listCandidate.gridx = 1;
 		gbc_scrollPane_listCandidate.gridy = 1;
 		panel_manage.add(scrollPane_listCandidate, gbc_scrollPane_listCandidate);
-		scrollPane_listCandidate.setViewportView(list_candidates);
+		scrollPane_listCandidate.setViewportView(list_candidate);
 		
-		list_candidates.setBorder(null);
-		list_candidates.setSelectedIndex(0);
-		list_candidates.addListSelectionListener(new ListSelectionListener() {
-
+		list_candidate.setBorder(null);
+		list_candidate.setSelectedIndex(0);
+		list_candidate.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				display.repaint();
 			}
-			
 		});
 		
 		JScrollPane scrollPane_listClipped = new JScrollPane();
@@ -468,15 +466,12 @@ public class GUI {
 		list_clipped.setBorder(null);
 		list_clipped.setSelectedIndex(0);
 		list_clipped.addListSelectionListener(new ListSelectionListener() {
-
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				display.repaint();
 			}
-			
 		});
 		
-		JButton btnDelete_clipping = new JButton("Delete selected");
 		btnDelete_clipping.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				while (!list_clipping.isSelectionEmpty()) {
@@ -493,13 +488,12 @@ public class GUI {
 		gbc_btnDelete_clipping.gridy = 2;
 		panel_manage.add(btnDelete_clipping, gbc_btnDelete_clipping);
 		
-		JButton btnDelete_candidate = new JButton("Delete selected");
 		btnDelete_candidate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				while (!list_candidates.isSelectionEmpty()) {
-					int selectedIndex = list_candidates.getSelectedIndex();
-					indicesCandidates.remove(selectedIndex);
-					model_candidates.remove(selectedIndex);
+				while (!list_candidate.isSelectionEmpty()) {
+					int selectedIndex = list_candidate.getSelectedIndex();
+					indicesCandidate.remove(selectedIndex);
+					model_candidate.remove(selectedIndex);
 					candidatePols.remove(selectedIndex);
 				}
 			}
@@ -566,7 +560,7 @@ public class GUI {
 					printReport("", 0, -1, -1, false, true);
 					return;
 				}
-				if(list_candidates.isSelectionEmpty()) {
+				if(list_candidate.isSelectionEmpty()) {
 					printReport("", -1, 0, -1, false, true);
 					return;
 				}
@@ -576,7 +570,7 @@ public class GUI {
 				Polygon clippingPol = clippingPols.get(list_clipping.getSelectedIndex());
 				Set<Polygon> candidatePolsSelected = new HashSet<Polygon>();
 				for(int i = 0; i < candidatePols.size(); i++) {
-					if(list_candidates.isSelectedIndex(i)) {
+					if(list_candidate.isSelectedIndex(i)) {
 						candidatePolsSelected.add(candidatePols.get(i));
 					}
 				}
@@ -672,10 +666,101 @@ public class GUI {
 		mnPolygon.add(mnMoveTo);
 		
 		JMenuItem mntmClippingPolygons_1 = new JMenuItem("Clipping polygons");
+		mntmClippingPolygons_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ArrayList<Polygon> selectedPolygons = new ArrayList<Polygon>();
+				int[] indicesSelectedCandidate = list_candidate.getSelectedIndices();
+				int[] indicesSelectedClipped = list_clipped.getSelectedIndices();
+				if(indicesSelectedCandidate.length == 0 && indicesSelectedClipped.length == 0) {
+					JOptionPane.showMessageDialog(null, "Please select from the lists at least one candidate/clipped polygon\nwhich should be moved to the list of clipping polygons.",
+			                "Notification", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+				// store selected polygons
+				for(int i : indicesSelectedCandidate) {
+					selectedPolygons.add(candidatePols.get(i));
+				}
+				for(int i : indicesSelectedClipped) {
+					selectedPolygons.add(clippedPols.get(i));
+				}
+				
+				// delete selected polygons
+				// These loops perform the same as btnDelete_candidate.doClick() and btnDelete_clipped.doClick(),
+				// but then the button clicking is visible for the user. The loops cannot really be moved
+				// to a separate method, because the variables are constructed very specifically for each type
+				// of polygon.
+				while (!list_candidate.isSelectionEmpty()) {
+					int selectedIndex = list_candidate.getSelectedIndex();
+					indicesCandidate.remove(selectedIndex);
+					model_candidate.remove(selectedIndex);
+					candidatePols.remove(selectedIndex);
+				}
+				while (!list_clipped.isSelectionEmpty()) {
+					int selectedIndex = list_clipped.getSelectedIndex();
+					model_clipped.remove(selectedIndex);
+					clippedPols.remove(selectedIndex);
+				}
+				
+				// add selected polygons to clipping polygons
+				for(Polygon pol : selectedPolygons) {
+					int i = getFreeIndex(indicesClipping);
+					indicesClipping.add(i, i);
+					model_clipping.add(i, "Clipping P. " + (i + 1));
+					clippingPols.add(i, pol);
+					display.repaint();
+				}
+				
+			}
+		});
 		mntmClippingPolygons_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
 		mnMoveTo.add(mntmClippingPolygons_1);
 		
 		JMenuItem mntmCandidatePolygons_1 = new JMenuItem("Candidate polygons");
+		mntmCandidatePolygons_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ArrayList<Polygon> selectedPolygons = new ArrayList<Polygon>();
+				int[] indicesSelectedClipping = list_clipping.getSelectedIndices();
+				int[] indicesSelectedClipped = list_clipped.getSelectedIndices();
+				if(indicesSelectedClipping.length == 0 && indicesSelectedClipped.length == 0) {
+					JOptionPane.showMessageDialog(null, "Please select from the lists at least one clipping/clipped polygon\nwhich should be moved to the list of candidate polygons.",
+			                "Notification", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+				// store selected polygons
+				for(int i : indicesSelectedClipping) {
+					selectedPolygons.add(clippingPols.get(i));
+				}
+				for(int i : indicesSelectedClipped) {
+					selectedPolygons.add(clippedPols.get(i));
+				}
+
+				// delete selected polygons
+				// These loops perform the same as btnDelete_clipping.doClick() and btnDelete_clipped.doClick(),
+				// but then the button clicking is visible for the user. The loops cannot really be moved
+				// to a separate method, because the variables are constructed very specifically for each type
+				// of polygon.
+				while (!list_clipping.isSelectionEmpty()) {
+					int selectedIndex = list_clipping.getSelectedIndex();
+					indicesClipping.remove(selectedIndex);
+					model_clipping.remove(selectedIndex);
+					clippingPols.remove(selectedIndex);
+				}
+				while (!list_clipped.isSelectionEmpty()) {
+					int selectedIndex = list_clipped.getSelectedIndex();
+					model_clipped.remove(selectedIndex);
+					clippedPols.remove(selectedIndex);
+				}
+				
+				// add selected polygons to candidate polygons
+				for(Polygon pol : selectedPolygons) {
+					int i = getFreeIndex(indicesCandidate);
+					indicesCandidate.add(i, i);
+					model_candidate.add(i, "Candidate P. " + (i + 1));
+					candidatePols.add(i, pol);
+					display.repaint();
+				}
+			}
+		});
 		mntmCandidatePolygons_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnMoveTo.add(mntmCandidatePolygons_1);
 		
@@ -730,6 +815,15 @@ public class GUI {
 		return i;
 	}
 	
+	/**
+	 * This methods generates a report message and prints it in the report text field.
+	 * @param algorithm The name of the algorithm used.
+	 * @param numberSelectedClipping The number of selected clipping polygons.
+	 * @param numberSelectedCandidate The number of selected candidate polygons.
+	 * @param numberClipped The number of selected clipped polygons.
+	 * @param automaticChosen Indicates whether the user selected to let the program choose an appropriate algorithm.
+	 * @param error Indicates whether the clipping process succeeded.
+	 */
 	private void printReport(String algorithm, int numberSelectedClipping, int numberSelectedCandidate, int numberClipped, boolean automaticChosen, boolean error) {
 		String s = new String();
 		if(error) {
