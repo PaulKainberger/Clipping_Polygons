@@ -45,6 +45,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
 
 /**
  * @author Paul
@@ -651,6 +652,32 @@ public class GUI {
 		
 		JMenu mnPolygon = new JMenu("Polygons");
 		menuBar.add(mnPolygon);
+		
+		JMenu mnOpen = new JMenu("Open as");
+		mnPolygon.add(mnOpen);
+		
+		JMenuItem mntmClippingPolygons = new JMenuItem("Clipping polygons");
+		mntmClippingPolygons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+		mnOpen.add(mntmClippingPolygons);
+		
+		JMenuItem mntmCandidatePolygons = new JMenuItem("Candidate polygons");
+		mntmCandidatePolygons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+		mnOpen.add(mntmCandidatePolygons);
+		
+		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+		mnPolygon.add(mntmSave);
+		
+		JMenu mnMoveTo = new JMenu("Move to");
+		mnPolygon.add(mnMoveTo);
+		
+		JMenuItem mntmClippingPolygons_1 = new JMenuItem("Clipping polygons");
+		mntmClippingPolygons_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
+		mnMoveTo.add(mntmClippingPolygons_1);
+		
+		JMenuItem mntmCandidatePolygons_1 = new JMenuItem("Candidate polygons");
+		mntmCandidatePolygons_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+		mnMoveTo.add(mntmCandidatePolygons_1);
 		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
