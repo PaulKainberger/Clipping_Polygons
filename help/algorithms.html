@@ -63,7 +63,12 @@ body {
     <p>This algorithm can only handle clipping polygons which are convex. Furthermore if the candidate polygon is not convex it can happen
     that double edges are introduced, i.e. that several &ldquo;parts&rdquo; of a polyon are only connected by a double edge which was
     not orginally part of the polygon. The Weiler-Atherton algorithm however avoids this and the polygon will be split into seperate
-    polygons.</p>
+    polygons.
+    <center>
+    <img width="900" src="imgs/sutherlandDoubleEdge.png"><br>
+    <i>Clipped polygon consists of two parts connected by double edge.</i>
+  </center>
+</p>
 
     <p>The algorithm works in the following way: We traverse the convex clipping polygon edge by edge in anti-clockwise order. We extend every
       edge to a line and compute the intersection points with the candidate polygon which we add to the candidate polygon at the appropriate position.

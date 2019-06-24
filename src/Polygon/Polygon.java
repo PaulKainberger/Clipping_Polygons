@@ -453,6 +453,9 @@ public class Polygon {
 	 * @return True if they are equal up to an epsilon and false otherwise.
 	 */
 	protected static boolean pointsEqualEps(Point2D.Double point1, Point2D.Double point2) {
+		if(point1 == null || point2 == null) {
+			return false;
+		}
 		if(point1.getX() - eps < point2.getX() && point2.getX() < point1.getX() + eps &&
 				point1.getY() - eps < point2.getY() && point2.getY() < point1.getY() + eps) {
 			return true;

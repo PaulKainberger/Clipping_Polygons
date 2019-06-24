@@ -35,7 +35,7 @@ public class HelpPane extends JFrame {
 	public HelpPane() {
 		super("Clipping Polygons - Help");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setSize(900, 700);
+		setSize(1100, 700);
 
 		editorPane = new JEditorPane();
 		editorPane.setEditable(false); 

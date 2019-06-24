@@ -55,7 +55,8 @@ body {
   <div class="content">
     <h2>Tutorial</h2>
     <p>This is the help page of the Clipping Polygons program. On this page we give a short tutorial on how to use the program.
-    You can also take a look at a short description of the clipping algorithms and some help page for polygons.</p>
+    You can also take a look at some help page for polygons and a short description of the clipping algorithms. Furthermore
+    we present the file format used to save and open files of polygons.</p>
     <p>A clipping algorithm cuts a <i>candidate polygon</i> such that it is contained in a <i>clipping polygon</i>, i.e.
     the intersection of two such polygons is computed.</p>
 
@@ -70,15 +71,26 @@ body {
       clipping polygon or a candidate polygon (which will be clipped against the clipping polygon).</li>
       <li>In the central part you can find a list with all clipping, candidate and clipped polygons.
       If you select polygons in one of the three lists (you can select several using the Ctrl- or Shift-key) you can delete these selected polygons.
-      This procedure, however, cannot be undone.  </li>
+      This procedure, however, cannot be undone.  If you want to unselect a polygon you simply need to use the Ctrl-key and
+      click on the polygon.
+      <center>
+      <img width="900" src="imgs/preClipping.png"><br>
+      <i>Before the clipping: One clipping polygon is selected (dark blue), and two candidate polygons are chosen (dark red).</i>
+    </center>
+      </li>
       <li>Finally in the bottom you can choose one of three <a href="algorithms.html">algorithms</a> which will be used for clipping the polygons.
       If you use <i>automatic</i>, then an algorithm which can handle the given polygons is chosen automatically.
       The clipping is started using the <i>Clip polygons</i> button. Then the chosen
       clipping polygon is used (one has to be selected) and all selected candidate polygons are clipped
-      against the chosen clipping polygon. Then the result will be displayed in the report-textbox.</li>
+      against the chosen clipping polygon. After the algorithm is done the result will be displayed in the report-textbox.
+      <center>
+      <img width="900" src="imgs/postClipping.png"><br>
+      <i>After the clipping: One clipped polygon is additionally selected (dark green), and we got two clipped polygons.</i>
+    </center>
+      </li>
       </ol></li></ol></p>
       <h3>Menu</h3>
-      <p>In the menu you can get this help-page, a short about window and you can modify the list of polygons:
+      <p>In the menu you can get this help-page, a short <i>about</i> window and you can modify the list of polygons:
         <ol><li>Move: You can move the polygons which are currently selected into a specific list. For instance
         you can move a currently selected resulting polygon to the list of clipping polygons and use
         it as clipping polygon. This is particulary useful after opening polygons.</li>
