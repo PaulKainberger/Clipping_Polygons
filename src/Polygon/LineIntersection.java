@@ -7,6 +7,7 @@ import java.util.Set;
 /**
  * Used to bundle information on the intersection of two line(segments).
  * @author Philipp
+ * @version 0.1
  *
  */
 public class LineIntersection {

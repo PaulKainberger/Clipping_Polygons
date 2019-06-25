@@ -47,7 +47,8 @@ public class Polygon {
 	public Polygon(Point2D.Double[] vertices) {
 		this();
 		for(int i = 0; i < vertices.length; i++) {
-			addVertex(vertices[i]);
+			if(vertices[i] != null)
+				addVertex(vertices[i]);
 		}
 	}
 
@@ -58,7 +59,7 @@ public class Polygon {
 	 */
 	public Polygon(Polygon polygon) {
 		vertices = new ArrayList<Point2D.Double>();
-		for(Point2D.Double vertex : polygon.vertices){
+		for(Point2D.Double vertex : polygon.vertices) {
 			Point2D.Double copy = (Point2D.Double) vertex.clone();
 			vertices.add(copy);
 		}
@@ -121,6 +122,10 @@ public class Polygon {
 				pointsEqualEps(getVertex( Math.floorMod(index-1, getNumberVertices()) ), vertex))) {
 			return false;
 		} 
+		
+		if(vertex == null) {
+			return false;
+		}
 
 		vertices.add(index, vertex);
 		return true;
@@ -453,6 +458,9 @@ public class Polygon {
 	 * @return True if they are equal up to an epsilon and false otherwise.
 	 */
 	protected static boolean pointsEqualEps(Point2D.Double point1, Point2D.Double point2) {
+		if(point1 == null || point2 == null) {
+			return false;
+		}
 		if(point1.getX() - eps < point2.getX() && point2.getX() < point1.getX() + eps &&
 				point1.getY() - eps < point2.getY() && point2.getY() < point1.getY() + eps) {
 			return true;

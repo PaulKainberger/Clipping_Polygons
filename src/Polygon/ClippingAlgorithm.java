@@ -149,16 +149,18 @@ public class ClippingAlgorithm {
 				
 				LineIntersection intersectionLine = Polygon.intersectLines(prevPoint, currentPoint, eBegin, eEnd, true);
 				if(intersectionLine.getType() == LineIntersection.IntersectionType.SEGMENT) {
-					return null;
-				}
-				Point2D.Double intersection = intersectionLine.getIntersection(); 
-				if(Polygon.inside(currentPoint, eBegin, eEnd)) {
-					if(!Polygon.inside(prevPoint, eBegin, eEnd)) {
+					result.addVertex(intersectionLine.getLineSegmentStart());
+					result.addVertex(intersectionLine.getLineSegmentEnd());
+				} else {
+					Point2D.Double intersection = intersectionLine.getIntersection(); 
+					if(Polygon.inside(currentPoint, eBegin, eEnd)) {
+						if(!Polygon.inside(prevPoint, eBegin, eEnd)) {
+							result.addVertex(intersection);
+						}
+						result.addVertex(currentPoint);
+					} else if(Polygon.inside(prevPoint, eBegin, eEnd)) {
 						result.addVertex(intersection);
 					}
-					result.addVertex(currentPoint);
-				} else if(Polygon.inside(prevPoint, eBegin, eEnd)) {
-					result.addVertex(intersection);
 				}
 			}
 		}
@@ -192,7 +194,7 @@ public class ClippingAlgorithm {
 			return new Polygon(candidate);
 		}
 		if (candidate.contains(clippingPolygon)) {
-			return new Polygon();
+			return new Polygon(clippingPolygon);
 		}*/
 		
 		Set<Point2D.Double> intersectionPointsSet = null;
@@ -206,6 +208,7 @@ public class ClippingAlgorithm {
 		List<Boolean> clippingIsIntersectionPoint = new ArrayList<Boolean>(Collections.nCopies(clippingPolygon.getNumberVertices(), false));
 		
 		// Add intersection points to the polygons. Polygons do not change visually.
+		// Note that if a vertex already is an intersection point, this point will be duplicated.
 		for (Point2D.Double intersectingPoint : intersectionPoints) {
 			// Add intersection points to candidate polygon.
 			boolean flag = true; // Indicates whether the intersection point lies between last and first vertex.
@@ -238,49 +241,115 @@ public class ClippingAlgorithm {
 			}
 		}
 		
+		// make the polygons clockwise oriented
+		if (! clippingPolygon.orientedClockwise()) {
+			Collections.reverse(clippingWithIntersections.vertices);
+			Collections.reverse(clippingIsIntersectionPoint);
+		}
+		if (! candidate.orientedClockwise()) {
+			Collections.reverse(candidateWithIntersections.vertices);
+			Collections.reverse(candidateIsIntersectionPoint);
+		}
+		
 		// Construct clipped polygons.
 		List<Polygon> clippedPols = new ArrayList<Polygon>();
-		while (! intersectionPoints.isEmpty()) {
+		while (clippingIsIntersectionPoint.contains(true)) {
 			// Construct new clipped polygon.
 			Polygon clipped = new Polygon();
-			Point2D.Double vertex = new Point2D.Double();
-			int i = candidateWithIntersections.vertices.indexOf(intersectionPoints.get(0)); // index for candidate polygon
-			// Start clipping.
-			do {
-				vertex = candidateWithIntersections.getVertex(i);
-				// vertex already in clipped??
-				// ...
-				clipped.addVertex(candidateWithIntersections.getVertex(i));
-				intersectionPoints.remove(candidateWithIntersections.getVertex(i));
-				i++;
-			}
-			while (candidateIsIntersectionPoint.get(i));
-			if(intersectionPoints.isEmpty()) {
-				break;
-			}
+			// Start on the clipping polygon outside of the candidate polygon on a non-intersection point.
+			// Such a point exists, because the polygons do not contain each other (see first lines of this method).
+			int initial = getIndexOfFirstNonIntersectionPointOutsideWA(clippingWithIntersections, clippingIsIntersectionPoint, candidate);
+			// Start clipping at the first intersection point.
+			int startingIndexClipping = getIndexOfNextIntersectionPointWA(clippingWithIntersections, clippingIsIntersectionPoint, initial);
+			int endIndexClipping = getIndexOfNextIntersectionPointWA(clippingWithIntersections, clippingIsIntersectionPoint, startingIndexClipping);
+			Point2D.Double v = clippingWithIntersections.getVertex(startingIndexClipping); // first vertex to be added
+			clipped.addVertex(v);
 			
-			// ...
-			
+			boolean breakflag = false;
+			while (!breakflag) { //(! v.equals(clippingWithIntersections.getVertex(endIndexClipping))) {
+				// add vertices of clipping polygon to clipped polygon
+				if (startingIndexClipping > endIndexClipping) {
+					for (int i = startingIndexClipping + 1; i <= clippingWithIntersections.getNumberVertices(); i++) {
+						v = clippingWithIntersections.getVertex(i);
+						clipped.addVertex(v);
+					}
+					startingIndexClipping = 0;
+				}
+				for (int i = startingIndexClipping + 1; i <= endIndexClipping; i++) {
+					v = clippingWithIntersections.getVertex(i);
+					clipped.addVertex(v);
+				}
+				// "remove" these intersection points
+				clippingIsIntersectionPoint.set(startingIndexClipping, false);
+				clippingIsIntersectionPoint.set(endIndexClipping, false);
+				
+				// add vertices of candidate polygon to clipped polygon
+				int startingIndexCandidate = candidateWithIntersections.vertices.indexOf(clippingWithIntersections.getVertex(endIndexClipping));
+				int endIndexCandidate = getIndexOfNextIntersectionPointWA(candidateWithIntersections, candidateIsIntersectionPoint, startingIndexCandidate);
+				if (candidateWithIntersections.getVertex(endIndexCandidate).equals(clipped.getVertex(0))) {
+					candidateIsIntersectionPoint.set(startingIndexCandidate, false);
+					candidateIsIntersectionPoint.set(endIndexCandidate, false);
+					endIndexCandidate--;
+					breakflag = true;
+				}
+				if (startingIndexCandidate > endIndexCandidate) {
+					for (int i = startingIndexCandidate + 1; i <= candidateWithIntersections.getNumberVertices(); i++) {
+						v = candidateWithIntersections.getVertex(i);
+						clipped.addVertex(v);
+					}
+					startingIndexCandidate = 0;
+				}
+				for (int i = startingIndexCandidate + 1; i <= endIndexCandidate; i++) {
+					v = candidateWithIntersections.getVertex(i);
+					clipped.addVertex(v);
+				}
+				// "remove" these intersection points
+				candidateIsIntersectionPoint.set(startingIndexCandidate, false);
+				candidateIsIntersectionPoint.set(endIndexCandidate, false);
+				
+				if (breakflag)
+					break;
+				
+				// prepare for next iteration
+				startingIndexClipping = clippingWithIntersections.vertices.indexOf(candidateWithIntersections.getVertex(endIndexCandidate));
+				endIndexClipping = getIndexOfNextIntersectionPointWA(clippingWithIntersections, clippingIsIntersectionPoint, startingIndexClipping);
+			}
 			clippedPols.add(clipped);
 		}
-		
-		
-		
-		
-		
-		/*/int j = clippingWithIntersections.vertices.indexOf(intersectionPoints.get(0)); // index for clipping polygon
-		if(! clippingWithIntersections.contains(candidateWithIntersections.getVertex(i+1))) {
-			i++;
-			while (! candidateIsIntersectionPoint.get(i)) {
-				clipped.addVertex(clippingWithIntersections.getVertex(i));
-				i++;
-			}
-			intersectionPoints.remove(0);
-		}
-		clipped.addVertex(intersectionPoints.get(0));*/
-		
-		
 		return clippedPols;
+	}
+	
+	/**
+	 * Calculates the first vertex of the polygon p1 which is not an intersection point based on the list
+	 * p1IsIntersectionPoint and which does not lie inside the polygon p2 and returns its position in p1.
+	 * @param p1 A polygon containing intersection points
+	 * @param p1IsIntersectionPoint A list of booleans which indicate whether a point in p1 is an intersection point.
+	 * @param p2 A polygon.
+	 * @return The position of the first vertex of p1, which is located outside of p2 and which is not an intersection point, or -1, if no such point was found.
+	 */
+	private int getIndexOfFirstNonIntersectionPointOutsideWA(Polygon p1, List<Boolean> p1IsIntersectionPoint, Polygon p2) {
+		for (int i = 0; i < p1.getNumberVertices(); i++)
+			if (p1IsIntersectionPoint.get(i).equals(false) && (! p2.contains(p1.getVertex(i))))
+				return i;
+		return -1;
+	}
+	
+	/**
+	 * Calculates the next (starting from position startingIndex not-including) intersection point of the polygon p1 and returns its position in p1.
+	 * @param p1 A polygon containing intersection points
+	 * @param p1IsIntersectionPoint A list of booleans which indicate whether a point in p1 is an intersection point.
+	 * @param startingIndex The index from which p1 is searched through.
+	 * @return The index of the next intersection point in p1.
+	 */
+	private int getIndexOfNextIntersectionPointWA(Polygon p1, List<Boolean> p1IsIntersectionPoint, int startingIndex) {
+		// iterate from the starting index + 1 to the end.
+		for (int i = startingIndex+1; i < p1.getNumberVertices(); i++)
+			if (p1IsIntersectionPoint.get(i).equals(true))
+				return i;
+		for (int i = 0; i < startingIndex; i++)
+			if (p1IsIntersectionPoint.get(i).equals(true))
+				return i;
+		return -1;
 	}
 	
 	/**

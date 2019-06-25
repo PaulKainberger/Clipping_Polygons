@@ -8,6 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Junit tests for Polygon clipping class.
+ * @author Philipp
+ * @version 0.1
+ *
+ */
 public class TestClippingAlgorithm {
 	private Polygon triangle;
 	private Polygon triangleInv;
@@ -163,5 +169,68 @@ public class TestClippingAlgorithm {
 		assertTrue(shResult);
 		Set<Polygon> shResultPolys = clipSH.getResult();
 		assertTrue(shResultPolys.isEmpty());
+	}
+	
+	/**
+	 * Tests for the Weiler-Atherton algorithm.
+	 */
+	
+	@Test
+	public void testWeilerAthertonTriangle() {
+		// https://www.wolframalpha.com/input/?i=Polygon((10.0,-10.0),(30.0,-10.0),(30.0,70.0),(10.0,70.0)),+Polygon((0.0,0.0),(0.0,50.0),(50.0,0.0))
+		ClippingAlgorithm clipSH = new ClippingAlgorithm();
+		clipSH.setClippingPolygon(triangle);
+		clipSH.addCandidatePolygon(rectangle);
+		boolean shResult = clipSH.WeilerAtherton();
+		assertTrue(shResult);
+		Set<Polygon> shResultPolys = clipSH.getResult();
+		assertEquals(1, shResultPolys.size());
+		Polygon clipped = new Polygon();
+		clipped.addVertex(10, 40);
+		clipped.addVertex(30, 20);
+		clipped.addVertex(30, 0);
+		clipped.addVertex(10, 0);
+		assertTrue(shResultPolys.contains(clipped));
+	}
+	
+	@Test
+	public void testWeilerAthertonTriangleInv() {
+		// https://www.wolframalpha.com/input/?i=Polygon((10.0,-10.0),(30.0,-10.0),(30.0,70.0),(10.0,70.0)),+Polygon((0.0,0.0),(0.0,50.0),(50.0,0.0))
+		ClippingAlgorithm clipSH = new ClippingAlgorithm();
+		clipSH.setClippingPolygon(triangleInv);
+		clipSH.addCandidatePolygon(rectangle);
+		boolean shResult = clipSH.WeilerAtherton();
+		assertTrue(shResult);
+		Set<Polygon> shResultPolys = clipSH.getResult();
+		assertEquals(1, shResultPolys.size());
+		Polygon clipped = new Polygon();
+		clipped.addVertex(10, 40);
+		clipped.addVertex(30, 20);
+		clipped.addVertex(30, 0);
+		clipped.addVertex(10, 0);
+		assertTrue(shResultPolys.contains(clipped));
+	}
+	
+	@Test
+	public void testWeilerAthertonHorseshoe() {
+		ClippingAlgorithm clipSH = new ClippingAlgorithm();
+		clipSH.setClippingPolygon(triangle);
+		clipSH.addCandidatePolygon(horseshoe);
+		boolean shResult = clipSH.WeilerAtherton();
+		assertTrue(shResult);
+		Set<Polygon> shResultPolys = clipSH.getResult();
+		assertEquals(2, shResultPolys.size());
+		Polygon clipped = new Polygon();
+		clipped.addVertex(0, 20);
+		clipped.addVertex(0, 23);
+		clipped.addVertex(10, 23);
+		clipped.addVertex(10, 20);
+		assertTrue(shResultPolys.contains(clipped));
+		clipped = new Polygon();
+		clipped.addVertex(0, 27);
+		clipped.addVertex(0, 30);
+		clipped.addVertex(10, 30);
+		clipped.addVertex(10, 27);
+		assertTrue(shResultPolys.contains(clipped));
 	}
 }

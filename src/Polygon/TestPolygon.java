@@ -297,7 +297,6 @@ public class TestPolygon {
 		poly.addVertex(2, 3);
 		poly.addVertex(3, 2);
 		poly.addVertex(2, 1);
-		System.out.println(poly.toString());
 		Rectangle2D.Double bounds = poly.getBounds();
 		assertEquals(new Rectangle2D.Double(1, 1, 2, 2), bounds);
 	}
