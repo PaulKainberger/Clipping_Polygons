@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import Polygon.greinerHorman.GreinerHormanPolygon;
 import Polygon.greinerHorman.GreinerHormanVertex;
@@ -295,9 +296,13 @@ public class ClippingAlgorithm {
 		return false;
 	}
 	
-	public void GreinerHormanCreateIntersectionVertices() {
-		//TODO: implement creating intersection vertices, 
-		//after intersect lines method was adopted to return alpha values
+	public void GreinerHormanCreateIntersectionVertices(GreinerHormanPolygon candidatePolygon, GreinerHormanPolygon clippingPolygon) {
+		GreinerHormanVertex currentCandidateVertex = candidatePolygon.getVertex(0);
+		ListIterator<Double> i = candidatePolygon.vertices.listIterator(1);
+		while(i.hasNext()) {
+			GreinerHormanVertex currentClippingVertex = clippingPolygon.getVertex(0);
+			ListIterator<Double> j = clippingPolygon.vertices.listIterator(1);
+		}
 	}
 	
 	public void GreinerHormanMarkEntryExit(GreinerHormanPolygon polygon1, GreinerHormanPolygon polygon2) {

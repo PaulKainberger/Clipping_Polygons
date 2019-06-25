@@ -46,4 +46,9 @@ public class GreinerHormanPolygon extends Polygon {
 			vertices.add(new GreinerHormanVertex(p.getVertex(i)));
 		}
 	}
+	
+	@Override
+	public GreinerHormanVertex getVertex(int i) {
+		return (GreinerHormanVertex)this.vertices.get(i);
+	}
 }
