@@ -301,6 +301,24 @@ public class Polygon {
 	}
 
 	/**
+	 * Checks if a given polygon is inside the polygon. We calculate all intersection points of the
+	 * two polygons and consider their location. We consider a polygon p as contained in another one,
+	 * if all points of p lie inside or on the edge of the other polygon i.e. a polygon contains itself.
+	 * @param p The polygon for which we check if it is inside.
+	 * @return True if the polygon is inside and false otherwise.
+	 */
+	public boolean contains(Polygon p) {
+		Set<Point2D.Double> intersectionPoints = intersect(p);
+		if (intersectionPoints.isEmpty())
+			if (! this.contains(p.getVertex(0)))
+				return false;
+		for (Point2D.Double i : intersectionPoints)
+			if (! this.contains(i))
+				return false;
+		return true;
+	}
+
+	/**
 	 * Checks if a given point is in a line segment. Use the idea given in:
 	 * https://stackoverflow.com/questions/328107/how-can-you-determine-a-point-is-between-two-other-points-on-a-line-segment
 	 * 
@@ -436,7 +454,7 @@ public class Polygon {
 	}
 
 	/**
-	 * Checks if a point is to the left of a line defined defined by two points, going through
+	 * Checks if a point is to the left of a line defined by two points, going through
 	 * edge1 and edge2 (coming from the direction of edge1).
 	 * 
 	 * @param point Point for which we want to check the position.

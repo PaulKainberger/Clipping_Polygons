@@ -189,13 +189,16 @@ public class ClippingAlgorithm {
 	}
 	
 	private List<Polygon> clipWeilerAtherton(Polygon candidate) {
-		// TODO method contains must be implemented (?)
-		/*if (clippingPolygon.contains(candidate)) {
-			return new Polygon(candidate);
+		List<Polygon> clippedPols = new ArrayList<Polygon>();
+
+		if (clippingPolygon.contains(candidate)) {
+			clippedPols.add(candidate);
+			return clippedPols;
 		}
 		if (candidate.contains(clippingPolygon)) {
-			return new Polygon(clippingPolygon);
-		}*/
+			clippedPols.add(clippingPolygon);
+			return clippedPols;
+		}
 		
 		Set<Point2D.Double> intersectionPointsSet = null;
 		intersectionPointsSet = candidate.intersect(clippingPolygon);
@@ -252,7 +255,6 @@ public class ClippingAlgorithm {
 		}
 		
 		// Construct clipped polygons.
-		List<Polygon> clippedPols = new ArrayList<Polygon>();
 		while (clippingIsIntersectionPoint.contains(true)) {
 			// Construct new clipped polygon.
 			Polygon clipped = new Polygon();
@@ -269,7 +271,7 @@ public class ClippingAlgorithm {
 			while (!breakflag) { //(! v.equals(clippingWithIntersections.getVertex(endIndexClipping))) {
 				// add vertices of clipping polygon to clipped polygon
 				if (startingIndexClipping > endIndexClipping) {
-					for (int i = startingIndexClipping + 1; i <= clippingWithIntersections.getNumberVertices(); i++) {
+					for (int i = startingIndexClipping + 1; i < clippingWithIntersections.getNumberVertices(); i++) {
 						v = clippingWithIntersections.getVertex(i);
 						clipped.addVertex(v);
 					}
@@ -293,7 +295,7 @@ public class ClippingAlgorithm {
 					breakflag = true;
 				}
 				if (startingIndexCandidate > endIndexCandidate) {
-					for (int i = startingIndexCandidate + 1; i <= candidateWithIntersections.getNumberVertices(); i++) {
+					for (int i = startingIndexCandidate + 1; i < candidateWithIntersections.getNumberVertices(); i++) {
 						v = candidateWithIntersections.getVertex(i);
 						clipped.addVertex(v);
 					}

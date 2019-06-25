@@ -76,7 +76,17 @@ body {
       This includes all the vertices which are inside the clipping polygon and after going around the entire clipping polygon it will only contain these plus the added vertices on the edge.</p>
 
     <h3>Weiler-Atherton</h3>
-    <p>TBA</p>
+    <p>This algorithm my handle convex clipping polygons. However, it is not applicable for self-intersecting or degenerate clipping polygons.
+    For those examples where the algorithm Sutherland-Hodgman produces a single clipped polygon which looks like several different polygons,
+    the algorithm Weiler-Atherton splits up this single clipped polygon into its non-overlapping parts.</p>
+	<p>The algorithm works as follows: Considering a clipping polygon and a candidate polygon, we orient both clockwise and add all intersection points
+	as vertices to the polygons at the right positions (and mark them as intersection points). Then we start at a vertex of the clipping polygon
+	which lies outside the candidate polygon. We go through the vertices of the clipping polygon until we reach an intersection point.
+	Next, we add all vertices from the first until the second intersection point of the clipping polygon to the clipped polygon.
+	Once having reached the second intersection point, we locate this very vertex on the candidate polygon and add from there on all following vertices
+	to the clipped polygon until we reach yet another intersection point on the candidate polygon. Then we jump again to the clipping polygon
+	and continue this process until we reach again the first vertex of the clipped polygon. The first clipped polygon is then finished.
+	If there are more intersection points, the process starts once more using the remaining intersection points, constructing more clipped polygons.</p>
 
     <h3>Greiner-Hormann</h3>
     <p>TBA</p>
