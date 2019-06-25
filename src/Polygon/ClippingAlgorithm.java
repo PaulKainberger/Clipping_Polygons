@@ -148,16 +148,18 @@ public class ClippingAlgorithm {
 				
 				LineIntersection intersectionLine = Polygon.intersectLines(prevPoint, currentPoint, eBegin, eEnd, true);
 				if(intersectionLine.getType() == LineIntersection.IntersectionType.SEGMENT) {
-					return null;
-				}
-				Point2D.Double intersection = intersectionLine.getIntersection(); 
-				if(Polygon.inside(currentPoint, eBegin, eEnd)) {
-					if(!Polygon.inside(prevPoint, eBegin, eEnd)) {
+					result.addVertex(intersectionLine.getLineSegmentStart());
+					result.addVertex(intersectionLine.getLineSegmentEnd());
+				} else {
+					Point2D.Double intersection = intersectionLine.getIntersection(); 
+					if(Polygon.inside(currentPoint, eBegin, eEnd)) {
+						if(!Polygon.inside(prevPoint, eBegin, eEnd)) {
+							result.addVertex(intersection);
+						}
+						result.addVertex(currentPoint);
+					} else if(Polygon.inside(prevPoint, eBegin, eEnd)) {
 						result.addVertex(intersection);
 					}
-					result.addVertex(currentPoint);
-				} else if(Polygon.inside(prevPoint, eBegin, eEnd)) {
-					result.addVertex(intersection);
 				}
 			}
 		}

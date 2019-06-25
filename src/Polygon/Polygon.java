@@ -47,7 +47,8 @@ public class Polygon {
 	public Polygon(Point2D.Double[] vertices) {
 		this();
 		for(int i = 0; i < vertices.length; i++) {
-			addVertex(vertices[i]);
+			if(vertices[i] != null)
+				addVertex(vertices[i]);
 		}
 	}
 
@@ -58,7 +59,7 @@ public class Polygon {
 	 */
 	public Polygon(Polygon polygon) {
 		vertices = new ArrayList<Point2D.Double>();
-		for(Point2D.Double vertex : polygon.vertices){
+		for(Point2D.Double vertex : polygon.vertices) {
 			Point2D.Double copy = (Point2D.Double) vertex.clone();
 			vertices.add(copy);
 		}
@@ -121,6 +122,10 @@ public class Polygon {
 				pointsEqualEps(getVertex( Math.floorMod(index-1, getNumberVertices()) ), vertex))) {
 			return false;
 		} 
+		
+		if(vertex == null) {
+			return false;
+		}
 
 		vertices.add(index, vertex);
 		return true;
