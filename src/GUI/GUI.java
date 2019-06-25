@@ -20,12 +20,16 @@ import javax.swing.JTextArea;
 import java.awt.Dimension;
 import javax.swing.border.BevelBorder;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.JList;
 import javax.swing.JRadioButton;
@@ -85,6 +89,8 @@ public class GUI {
 	
 	private ArrayList<Integer> indicesClipping = new ArrayList<Integer>();
 	private ArrayList<Integer> indicesCandidate = new ArrayList<Integer>();
+	
+	private final JFileChooser fc = new JFileChooser();
 	
 	/**
 	 * Launch the application.
@@ -622,6 +628,7 @@ public class GUI {
 				
 				printReport(algorithm, 1, candidatePolsSelected.size(), clippedPols.size(), automaticChosen, error);
 				display.repaint();
+				System.out.println(clippedPols.get(0));
 			}
 			
 		});
@@ -659,6 +666,18 @@ public class GUI {
 		mnOpen.add(mntmCandidatePolygons);
 		
 		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fc.showSaveDialog(mntmSave);
+				File savePolygons = fc.getSelectedFile();
+				try {
+					FileWriter writer = new FileWriter(savePolygons);
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 		mnPolygon.add(mntmSave);
 		

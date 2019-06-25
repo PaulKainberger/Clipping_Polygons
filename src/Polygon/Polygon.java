@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -63,10 +64,6 @@ public class Polygon {
 			Point2D.Double copy = (Point2D.Double) vertex.clone();
 			vertices.add(copy);
 		}
-	}
-
-	public ListIterator<Point2D.Double> getIterator() {
-		return vertices.listIterator();
 	}
 
 	/**
@@ -754,5 +751,9 @@ public class Polygon {
 		g.setColor(c);
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,alpha));
 		g.fillPolygon(getScaledXintValues(scalingFactor, screenWidth), getScaledYintValues(scalingFactor, screenHeight), getNumberVertices());
+	}
+	
+	public void writeToFile(FileWriter writer) {
+		
 	}
 }
