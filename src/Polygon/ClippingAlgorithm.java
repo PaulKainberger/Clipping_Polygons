@@ -208,6 +208,8 @@ public class ClippingAlgorithm {
 			return clippedPols;
 		}
 		
+		
+		
 		Set<Point2D.Double> intersectionPointsSet = null;
 		intersectionPointsSet = candidate.intersect(clippingPolygon);
 
@@ -391,7 +393,8 @@ public class ClippingAlgorithm {
 	 * @return Whether the clipping was successful.
 	 */
 	public boolean GreinerHorman() {
-		for (Polygon candidate : candidatePolygons) {
+		return false;
+		/*for (Polygon candidate : candidatePolygons) {
 			GreinerHormanPolygon currentClippingPolygon = new GreinerHormanPolygon(clippingPolygon);
 			GreinerHormanPolygon currentCandidatePolygon = new GreinerHormanPolygon(candidate);
 			GreinerHormanCreateIntersectionVertices(currentCandidatePolygon, currentClippingPolygon);
@@ -399,7 +402,7 @@ public class ClippingAlgorithm {
 			GreinerHormanMarkEntryExit(currentCandidatePolygon, currentClippingPolygon);
 			GreinerHormanCreateClippedPolygons(currentCandidatePolygon, currentClippingPolygon);
 		}
-		return true;
+		return true;*/
 	}
 
 	/**

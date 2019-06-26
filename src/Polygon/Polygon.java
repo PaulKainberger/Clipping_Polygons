@@ -307,7 +307,7 @@ public class Polygon {
 		if (intersectionPoints.isEmpty())
 			if (!this.contains(p.getVertex(0)))
 				return false;
-		for (Point2D.Double i : intersectionPoints)
+		for (Point2D.Double i : p.vertices)
 			if (!this.contains(i))
 				return false;
 		return true;
