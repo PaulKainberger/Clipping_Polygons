@@ -2,6 +2,8 @@ package Polygon.greinerHorman;
 
 import java.awt.geom.Point2D.Double;
 
+import Polygon.Polygon;
+
 /**
  * Represents a vertex of a polygon with additional information used by the Greiner-Horman algorithm.
  * 
@@ -16,10 +18,12 @@ public class GreinerHormanVertex extends Double {
 	 * Just there because eclipse wants it.
 	 */
 	private static final long serialVersionUID = 1L;
-	boolean intersect;
-	boolean entry;
-	int neighbor;
-	double alpha;
+	protected boolean intersect;
+	protected boolean entry;
+	protected GreinerHormanVertex neighbor;
+	protected double alpha;
+	protected GreinerHormanVertex next;
+	protected GreinerHormanVertex previous;
 	
 	/**
 	 * Constructor for a vertex without special information.
@@ -48,10 +52,10 @@ public class GreinerHormanVertex extends Double {
 	 * @param alpha The position of the vertex on the edge, if it is an intersecting vertex.
 	 */
 	public GreinerHormanVertex(double x, double y, boolean intersect, 
-			boolean entryExit, int neighbor, double alpha) {
+			boolean entry, GreinerHormanVertex neighbor, double alpha) {
 		super(x,y);
 		this.intersect = intersect;
-		this.entry = entryExit;
+		this.entry = entry;
 		this.neighbor = neighbor;
 		this.alpha = alpha;
 	}
@@ -65,10 +69,10 @@ public class GreinerHormanVertex extends Double {
 	 * @param alpha The position of the vertex on the edge, if it is an intersecting vertex.
 	 */
 	public GreinerHormanVertex(Double vertex, boolean intersect, 
-			boolean entryExit, int neighbor, double alpha) {
+			boolean entry, GreinerHormanVertex neighbor, double alpha) {
 		super(vertex.x,vertex.y);
 		this.intersect = intersect;
-		this.entry = entryExit;
+		this.entry = entry;
 		this.neighbor = neighbor;
 		this.alpha = alpha;
 	}
@@ -92,7 +96,7 @@ public class GreinerHormanVertex extends Double {
 	 * Gets the corresponding vertex in the other polygon.
 	 * @return An iterator with next pointing to the corresponding vertex in the other polygon.
 	 */
-	public int getNeighbor() {
+	public GreinerHormanVertex getNeighbor() {
 		return neighbor;
 	}
 
@@ -110,5 +114,22 @@ public class GreinerHormanVertex extends Double {
 	 */
 	public void setEntry(boolean entryExit) {
 		this.entry = entryExit;
+	}
+	
+	
+	public GreinerHormanVertex getNext() {
+		return next;
+	}
+	
+	public GreinerHormanVertex getPrevious() {
+		return previous;
+	}
+
+	public void setNeighbor(GreinerHormanVertex v) {
+		this.neighbor = v;
+	}
+
+	public void setIntersect(boolean b) {
+		intersect = b;
 	}
 }

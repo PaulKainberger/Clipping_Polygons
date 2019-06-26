@@ -5,6 +5,7 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -207,7 +208,7 @@ public class ClippingAlgorithm {
 			clippedPols.add(clippingPolygon);
 			return clippedPols;
 		}
-		
+
 		Set<Point2D.Double> intersectionPointsSet = null;
 		intersectionPointsSet = candidate.intersect(clippingPolygon);
 
@@ -395,9 +396,13 @@ public class ClippingAlgorithm {
 			GreinerHormanPolygon currentClippingPolygon = new GreinerHormanPolygon(clippingPolygon);
 			GreinerHormanPolygon currentCandidatePolygon = new GreinerHormanPolygon(candidate);
 			GreinerHormanCreateIntersectionVertices(currentCandidatePolygon, currentClippingPolygon);
+			System.out.println("a");
 			GreinerHormanMarkEntryExit(currentClippingPolygon, currentCandidatePolygon);
+			System.out.println("b");
 			GreinerHormanMarkEntryExit(currentCandidatePolygon, currentClippingPolygon);
+			System.out.println("c");
 			GreinerHormanCreateClippedPolygons(currentCandidatePolygon, currentClippingPolygon);
+			System.out.println("c");
 		}
 		return true;
 	}
@@ -411,27 +416,40 @@ public class ClippingAlgorithm {
 	 */
 	private void GreinerHormanCreateIntersectionVertices(GreinerHormanPolygon candidatePolygon,
 			GreinerHormanPolygon clippingPolygon) {
-		ListIterator<Double> i = candidatePolygon.vertices.listIterator(1);
-		while (i.hasNext()) {
-			ListIterator<Double> j = clippingPolygon.vertices.listIterator(1);
-			while (j.hasNext()) {
-				i.previous();
-				j.previous();
-				LineIntersection intersection = Polygon.intersectLines(i.next(), i.next(), j.next(), j.next());
+
+		GreinerHormanVertex v = candidatePolygon.getFirstVertex();
+		List<GreinerHormanVertex> listCandidate = new ArrayList<GreinerHormanVertex>();
+		while (v.getNext() != candidatePolygon.getFirstVertex()) {
+			listCandidate.add(v);
+			v = v.getNext();
+		}
+		listCandidate.add(v);
+
+		v = clippingPolygon.getFirstVertex();
+		List<GreinerHormanVertex> listClipping = new ArrayList<GreinerHormanVertex>();
+		while (v.getNext() != clippingPolygon.getFirstVertex()) {
+			listClipping.add(v);
+			v = v.getNext();
+		}
+		listClipping.add(v);
+
+		for (int i = 0; i < listClipping.size(); i++) {
+			for (int j = 0; j < listCandidate.size(); j++) {
+				LineIntersection intersection = Polygon.intersectLines(listClipping.get(i), listClipping.get((i + 1)%listClipping.size()),
+						listCandidate.get(j), listCandidate.get((j + 1)%listCandidate.size()));
 				if (intersection.getType() == LineIntersection.IntersectionType.POINT) {
 					if (intersection.getLineRatio1() == 0) // degenerate case
 						;
 					else if (intersection.getLineRatio2() == 0) // degenerate case
 						;
 					else { // general case
-						i.previous();
-						j.previous();
-						i.add(new GreinerHormanVertex(intersection.getIntersection(), true, false,
-								j.nextIndex(), intersection.getLineRatio1()));
-						j.add(new GreinerHormanVertex(intersection.getIntersection(), true, false,
-								i.nextIndex(), intersection.getLineRatio1()));
-						i.next();
-						j.next();
+						GreinerHormanVertex newClippingVertex = new GreinerHormanVertex(intersection.getIntersection(),
+								true, false, null, intersection.getLineRatio1());
+						GreinerHormanVertex newCandidateVertex = new GreinerHormanVertex(intersection.getIntersection(),
+								true, false, newClippingVertex, intersection.getLineRatio2());
+						newClippingVertex.setNeighbor(newCandidateVertex);
+						clippingPolygon.addIntersectionVertex(newClippingVertex, listClipping.get(i));
+						candidatePolygon.addIntersectionVertex(newCandidateVertex, listCandidate.get(j));
 					}
 				}
 				if (intersection.getType() == LineIntersection.IntersectionType.SEGMENT) {
@@ -442,65 +460,43 @@ public class ClippingAlgorithm {
 	}
 
 	private void GreinerHormanMarkEntryExit(GreinerHormanPolygon polygon1, GreinerHormanPolygon polygon2) {
-		boolean inside = polygon1.contains(polygon2.getVertex(0));
-		for (Double vertex : polygon2.vertices) {
-			if (((GreinerHormanVertex) vertex).isIntersect()) {
-				((GreinerHormanVertex) vertex).setEntry(!inside);
+		boolean inside = polygon1.toPolygon().contains(polygon2.getFirstVertex());
+		GreinerHormanVertex v = polygon2.getFirstVertex().getNext();
+		while (v != polygon2.getFirstVertex()) {
+			if (v.isIntersect()) {
+				v.setEntry(!inside);
 				inside = !inside;
 			}
+			v = v.getNext();
 		}
 	}
-	
+
 	private void GreinerHormanCreateClippedPolygons(GreinerHormanPolygon candidatePolygon,
 			GreinerHormanPolygon clippingPolygon) {
-		boolean[] processedVertices = new boolean[candidatePolygon.getNumberVertices()];
-		processedVertices[0]=true; // first vertex is never an intersection vertex
-	//	while (Arrays.asList(processedVertices).contains(false)) {
-			System.out.println("entered");
-			ListIterator<Double> it = new GreinerHormanIterator(candidatePolygon.vertices,0);
-			while (!((GreinerHormanVertex) it.next()).isIntersect()) // go to first intersection vertex
-				processedVertices[it.previousIndex()] = true; // and set all vertices to processed
-			while (processedVertices[it.previousIndex()]) { // previous element is always an intersection
-				while (!((GreinerHormanVertex) it.next()).isIntersect()) { // move to next intersection
-					processedVertices[it.previousIndex()] = true; // and set all encountered vertices to processed
-				}
-			}
-			// previous element is an unprocessed intersection
-			Polygon clippedPolygon = new Polygon();
-			GreinerHormanVertex firstVertex = (GreinerHormanVertex) it.previous();
-			clippedPolygon.addVertex(firstVertex);
-			System.out.println(firstVertex.toString());
-			
-			processedVertices[it.nextIndex()] = true;
-			GreinerHormanVertex current = (GreinerHormanVertex) it.next();
-			boolean currentPolygon = true;		// currentPolygon is true if current is from the candidate polygon
+		GreinerHormanVertex current = candidatePolygon.getFirstVertex().getNext();
+		Polygon clippedPolygon;
+	//	while (candidatePolygon.hasIntersection()) {
+			while (!current.isIntersect())
+				current = current.getNext();
+			// we are at an unprocessed intersection vertex
+			clippedPolygon = new Polygon();
+			clippedPolygon.addVertex(current);
+			GreinerHormanVertex firstVertex = current;
 			do {
 				if (current.isEntry()) {
 					do {
-						current = (GreinerHormanVertex) it.next();
+						current = current.getNext();
 						clippedPolygon.addVertex(current);
-						System.out.println(current.toString());
 					} while (!current.isIntersect());
 				} else {
-					it.previous();
 					do {
-						current = (GreinerHormanVertex) it.previous();
+						current = current.getPrevious();
 						clippedPolygon.addVertex(current);
-						System.out.println(current.toString());
 					} while (!current.isIntersect());
 				}
-				if (currentPolygon) {
-					it = new GreinerHormanIterator(clippingPolygon.vertices,current.getNeighbor());
-					current = (GreinerHormanVertex) it.next();
-					currentPolygon = false;
-				}
-				else {
-					it = new GreinerHormanIterator(candidatePolygon.vertices,current.getNeighbor());
-					current = (GreinerHormanVertex) it.next();
-					currentPolygon = true;
-				}
-			} while (!(current == firstVertex));
-			System.out.println("Clipped");
+				current.setIntersect(false);
+				current = current.getNeighbor();
+			} while (current != firstVertex);
 			resultPolygons.add(clippedPolygon);
 	//	}
 	}
