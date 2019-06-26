@@ -477,6 +477,7 @@ public class ClippingAlgorithm {
 			// we are at an unprocessed intersection vertex
 			clippedPolygon = new Polygon();
 			clippedPolygon.addVertex(current);
+			current.setIntersect(false);
 			GreinerHormanVertex firstVertex = current;
 			do {
 				if (current.isEntry()) {
