@@ -186,7 +186,13 @@ public class ClippingAlgorithm {
 		}
 
 		for (Polygon candidate : candidatePolygons) {
-			List<Polygon> result = clipWeilerAtherton(candidate);
+			List<Polygon> result = null;
+			try {
+				 result = clipWeilerAtherton(candidate);
+			} catch(Exception e)
+			{ 
+				return false;
+			}
 			if (result == null) {
 				return false;
 			} else {
