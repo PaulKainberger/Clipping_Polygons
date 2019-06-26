@@ -396,13 +396,9 @@ public class ClippingAlgorithm {
 			GreinerHormanPolygon currentClippingPolygon = new GreinerHormanPolygon(clippingPolygon);
 			GreinerHormanPolygon currentCandidatePolygon = new GreinerHormanPolygon(candidate);
 			GreinerHormanCreateIntersectionVertices(currentCandidatePolygon, currentClippingPolygon);
-			System.out.println("a");
 			GreinerHormanMarkEntryExit(currentClippingPolygon, currentCandidatePolygon);
-			System.out.println("b");
 			GreinerHormanMarkEntryExit(currentCandidatePolygon, currentClippingPolygon);
-			System.out.println("c");
 			GreinerHormanCreateClippedPolygons(currentCandidatePolygon, currentClippingPolygon);
-			System.out.println("c");
 		}
 		return true;
 	}

@@ -671,7 +671,7 @@ public class GUI {
 					Polygon readPolygon = new Polygon();
 					while(line!=null) {
 						if(line.equals("")) {
-							System.out.println("Trennlinie");
+							//System.out.println("Trennlinie");
 							int i = getFreeIndex(indicesClipping);
 							indicesClipping.add(i, i);
 							model_clipping.add(i, "Clipping P. " + (i + 1));
@@ -742,10 +742,15 @@ public class GUI {
 				if(indicesSelectedClipping.length == 0 && indicesSelectedCandidate.length == 0 && indicesSelectedClipped.length == 0) {
 					JOptionPane.showMessageDialog(null, "Please select from the lists at least one  polygon which should be saved.",
 			                "Notification", JOptionPane.INFORMATION_MESSAGE);
+					return;
 				}
 				
 				fc.showSaveDialog(mntmSave);
 				File savePolygons = fc.getSelectedFile();
+				String filePath = savePolygons.getAbsolutePath();
+				if(!filePath.endsWith(".txt")) {
+					savePolygons = new File(filePath + ".txt");
+				}
 				
 				try {
 					FileWriter writer = new FileWriter(savePolygons);
@@ -787,6 +792,7 @@ public class GUI {
 				if(indicesSelectedCandidate.length == 0 && indicesSelectedClipped.length == 0) {
 					JOptionPane.showMessageDialog(null, "Please select from the lists at least one candidate/clipped polygon\nwhich should be moved to the list of clipping polygons.",
 			                "Notification", JOptionPane.INFORMATION_MESSAGE);
+					return;
 				}
 				
 				// store selected polygons
@@ -837,6 +843,7 @@ public class GUI {
 				if(indicesSelectedClipping.length == 0 && indicesSelectedClipped.length == 0) {
 					JOptionPane.showMessageDialog(null, "Please select from the lists at least one clipping/clipped polygon\nwhich should be moved to the list of candidate polygons.",
 			                "Notification", JOptionPane.INFORMATION_MESSAGE);
+					return;
 				}
 				
 				// store selected polygons
