@@ -27,7 +27,10 @@ import javax.swing.DefaultListModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -204,7 +207,7 @@ public class GUI {
 			@Override
 			public void mouseClicked(MouseEvent m) {
 				if(! btnStartDrawing.isEnabled()) {
-					drawnPol.addVertex(new Point2D.Double(m.getX()-display.getWidth()/2, m.getY()-display.getHeight()/2));
+					drawnPol.addVertex(new Point2D.Double((m.getX()-display.getWidth()/2)/display.getScalingFactor(), (m.getY()-display.getHeight()/2)/display.getScalingFactor()));
 					display.repaint();
 				}
 			}
@@ -628,7 +631,6 @@ public class GUI {
 				
 				printReport(algorithm, 1, candidatePolsSelected.size(), clippedPols.size(), automaticChosen, error);
 				display.repaint();
-				System.out.println(clippedPols.get(0));
 			}
 			
 		});
@@ -658,24 +660,116 @@ public class GUI {
 		mnPolygon.add(mnOpen);
 		
 		JMenuItem mntmClippingPolygons = new JMenuItem("Clipping polygons");
+		mntmClippingPolygons.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(fc.showOpenDialog(mntmClippingPolygons)!= JFileChooser.APPROVE_OPTION)
+					return;
+				File openPolygons = fc.getSelectedFile();
+				try {
+					BufferedReader reader = new BufferedReader(new FileReader(openPolygons));
+					String line = reader.readLine();
+					Polygon readPolygon = new Polygon();
+					while(line!=null) {
+						if(line.equals("")) {
+							System.out.println("Trennlinie");
+							int i = getFreeIndex(indicesClipping);
+							indicesClipping.add(i, i);
+							model_clipping.add(i, "Clipping P. " + (i + 1));
+							clippingPols.add(i, readPolygon);
+							display.repaint();
+							readPolygon = new Polygon();
+						}
+						else {
+							double x = Double.parseDouble(line.split(",")[0]);
+							double y = Double.parseDouble(line.split(",")[1]);
+							readPolygon.addVertex(x, y);
+						}
+						line = reader.readLine();
+					}
+					display.updateScalingFactor();
+					display.repaint();
+					reader.close();
+				} catch (IOException e) {
+					txtReport.setText("Error.\n\n Could not read file.");
+				}
+			}
+		});
 		mntmClippingPolygons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		mnOpen.add(mntmClippingPolygons);
 		
 		JMenuItem mntmCandidatePolygons = new JMenuItem("Candidate polygons");
+		mntmCandidatePolygons.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(fc.showOpenDialog(mntmCandidatePolygons)!= JFileChooser.APPROVE_OPTION)
+					return;
+				File openPolygons = fc.getSelectedFile();
+				try {
+					BufferedReader reader = new BufferedReader(new FileReader(openPolygons));
+					String line = reader.readLine();
+					Polygon readPolygon = new Polygon();
+					while(line!=null) {
+						if(line.equals("")) {
+							int i = getFreeIndex(indicesCandidate);
+							indicesCandidate.add(i, i);
+							model_candidate.add(i, "Candidate P. " + (i + 1));
+							candidatePols.add(i, readPolygon);
+							readPolygon = new Polygon();
+						}
+						else {
+							double x = Double.parseDouble(line.split(",")[0]);
+							double y = Double.parseDouble(line.split(",")[1]);
+							readPolygon.addVertex(x, y);
+						}
+						line = reader.readLine();
+					}
+					display.updateScalingFactor();
+					display.repaint();
+					reader.close();
+				} catch (IOException e) {
+					txtReport.setText("Error.\n\n Could not read file.");
+				}
+			}
+		});
 		mntmCandidatePolygons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnOpen.add(mntmCandidatePolygons);
 		
 		JMenuItem mntmSave = new JMenuItem("Save");
 		mntmSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) {	
+				int[] indicesSelectedClipping = list_clipping.getSelectedIndices();
+				int[] indicesSelectedCandidate = list_candidate.getSelectedIndices();
+				int[] indicesSelectedClipped = list_clipped.getSelectedIndices();
+				if(indicesSelectedClipping.length == 0 && indicesSelectedCandidate.length == 0 && indicesSelectedClipped.length == 0) {
+					JOptionPane.showMessageDialog(null, "Please select from the lists at least one  polygon which should be saved.",
+			                "Notification", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
 				fc.showSaveDialog(mntmSave);
 				File savePolygons = fc.getSelectedFile();
+				
 				try {
 					FileWriter writer = new FileWriter(savePolygons);
-					
+
+					for (int i : indicesSelectedClipping) {
+						clippingPols.get(i).writeToFile(writer);
+						writer.write('\n');
+					}
+
+					for (int i : indicesSelectedCandidate) {
+						candidatePols.get(i).writeToFile(writer);
+						writer.write('\n');
+					}
+
+					for (int i : indicesSelectedClipped) {
+						clippedPols.get(i).writeToFile(writer);
+						writer.write('\n');
+					}
+					writer.flush();
+					writer.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					txtReport.setText("Error.\n\n Could not save file. File might be incomplete or corrupted.");
 				}
+				
 			}
 		});
 		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
