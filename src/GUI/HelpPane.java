@@ -1,6 +1,7 @@
 package GUI;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -44,10 +45,9 @@ public class HelpPane extends JFrame {
 
 		getContentPane().add(new JScrollPane(editorPane), "Center");
 		Path currentRelativePath = Paths.get("");
-		String s = currentRelativePath.toAbsolutePath().toString();
-		System.out.println("Current relative path is: " + s);
+		URI path = currentRelativePath.toAbsolutePath().toUri();
 		try {
-			editorPane.setPage("file:///" + s + "\\help\\index.html");
+			editorPane.setPage(path.toString() + "/help/index.html");
 		} catch (IOException e) {
 			showFileOpenError();
 		}
