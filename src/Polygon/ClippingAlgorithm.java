@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import Polygon.greinerHorman.GreinerHormanIterator;
 import Polygon.greinerHorman.GreinerHormanPolygon;
 import Polygon.greinerHorman.GreinerHormanVertex;
 

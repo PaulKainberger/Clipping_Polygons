@@ -75,21 +75,21 @@ public class PolygonGraphic extends JPanel {
 			Rectangle2D.Double bounds = p.getBounds();
 			if(-bounds.x>maxWidth)
 				maxWidth = -bounds.x;
-			    System.out.println("j"+maxHeight + "," + maxWidth);
+			    // System.out.println("j"+maxHeight + "," + maxWidth);
 			if(bounds.x+bounds.width>maxWidth)
 				maxWidth = bounds.x+bounds.width;
-				System.out.println("j"+maxHeight + "," + maxWidth);
+				// System.out.println("j"+maxHeight + "," + maxWidth);
 			if(-bounds.y>maxHeight)
 				maxHeight = -bounds.y;
-				System.out.println("k"+maxHeight + "," + maxWidth);
+				// System.out.println("k"+maxHeight + "," + maxWidth);
 			if(bounds.y+bounds.height>maxHeight)
 				maxHeight = bounds.y+bounds.height;
-				System.out.println("j"+maxHeight + "," + maxWidth);
+				// System.out.println("j"+maxHeight + "," + maxWidth);
 		}
-		System.out.println(maxWidth + "," + maxHeight);
+		//System.out.println(maxWidth + "," + maxHeight);
 		scalingFactor = Math.min((this.getWidth()/2)/maxWidth, (this.getHeight()/2)/maxHeight);
-		System.out.println(scalingFactor);
-		System.out.println(this.getWidth() + "," + this.getHeight());
+		//System.out.println(scalingFactor);
+		//System.out.println(this.getWidth() + "," + this.getHeight());
 	}
 		
 	public void paintComponent(Graphics g) {
