@@ -89,7 +89,16 @@ body {
 	If there are more intersection points, the process starts once more using the remaining intersection points, constructing more clipped polygons.</p>
 
     <h3>Greiner-Hormann</h3>
-    <p>TBA</p>
+    <p>The Greiner-Horman algorithm is the most universal algorithm we implemented. It is applicable to self-intersecting and concave clipping polygons. 
+    However, there are some degenerate cases if a point lies on an edge of the other polygon. </p>
+    
+    <p>
+	The algorithm works as follows: The polygons are saved as a double linked list, where each vertex has two pointers, pointing to the previous and next edge. 
+	We calculate all intersection points of the two polygons. Then we add those intersection points in both polygons, at the right position and 
+	link the vertices which correspond to the same intersection point by a pointer. Then we go through all intersection points and mark them as an entry or exit to the other polygon. 
+	To get the resulting polygons we start at an intersection vertex and then follow the pointers to the next or previous point, 
+	depending whether this point is an entry or exit point to the other polygon. When we reach the next intersection point, 
+	we follow the pointer to the other polygon and continue.</p>
   </div>
 
 </body>
